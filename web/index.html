@@ -153,7 +153,7 @@
     </div>
       <div class="user-box">
       <span>Аккаунт: <b id="headerUserDisplay">Гость</b></span>
-      <button class="btn btn-sm" id="btnOpenAuth" onclick="openAuthModal()">Вход / Регистрация</button>
+      <button class="btn btn-sm" id="btnOpenAuth" onclick="document.getElementById('authModal').style.display='flex'">Вход / Регистрация</button>
       <button class="btn btn-ghost btn-sm" id="btnLogout" style="display:none;" onclick="fbLogout()">Выйти</button>
     </div>
   </header>
@@ -430,7 +430,7 @@
         "Общение игроков"
       ],
       users: [
-        { id: 1, name: "Owner_Premazing", ip: "185.44.12.1", role: "Владелец", prefix: "ВЛАДЕЛЕЦ", prefixColor: "#ef4444", banned: null, mute: "none" },
+        { id: 1, name: "Marsel_Wonka", ip: "185.44.12.1", role: "Владелец", prefix: "ВЛАДЕЛЕЦ", prefixColor: "#ef4444", banned: null, mute: "none" },
         { id: 2, name: "Alex_Mercer", ip: "92.114.88.14", role: "Модератор", prefix: "Следящий", prefixColor: "#10b981", banned: null, mute: "none" },
         { id: 3, name: "Maksim_Volkov", ip: "178.210.45.9", role: "Игрок", prefix: "VIP", prefixColor: "#f59e0b", banned: null, mute: "none" },
         { id: 4, name: "Dima_Ghetto", ip: "46.18.201.77", role: "Игрок", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" }
@@ -984,7 +984,7 @@
   </div>
 
   <script type="module">
-    import { initializeApp } from "https://gstatic.com";
+        import { initializeApp } from "https://gstatic.com";
     import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs } from "https://gstatic.com";
 
