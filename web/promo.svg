@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1171" height="396" viewBox="0 0 1171 396" role="img" aria-label="Premazing — клиент 0.3.7, сервер White 80.242.59.112:4141, Discord для выдачи доступа">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#1b0510"/>
+      <stop offset="0.38" stop-color="#5d0c1c"/>
+      <stop offset="0.68" stop-color="#a3283a"/>
+      <stop offset="0.88" stop-color="#c1440e"/>
+      <stop offset="1" stop-color="#f3a33d"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.76" cy="0.9" r="0.45">
+      <stop offset="0" stop-color="#ffdca6" stop-opacity="0.9"/>
+      <stop offset="0.6" stop-color="#f3a33d" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#f3a33d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#ffd7a6"/>
+    </linearGradient>
+    <linearGradient id="tower" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2e0a16" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#1a0409" stop-opacity="1"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1171" height="396" fill="url(#sky)"/>
+  <rect width="1171" height="396" fill="url(#glow)"/>
+
+  <g fill="#25060f" opacity="0.5">
+    <rect x="606" y="150" width="44" height="246"/><rect x="658" y="106" width="30" height="290"/>
+    <rect x="696" y="178" width="56" height="218"/><rect x="762" y="128" width="34" height="268"/>
+    <rect x="1046" y="140" width="38" height="256"/><rect x="1092" y="102" width="50" height="294"/>
+  </g>
+  <g fill="url(#tower)">
+    <rect x="806" y="196" width="62" height="200"/><rect x="878" y="150" width="40" height="246"/>
+    <rect x="928" y="212" width="72" height="184"/><rect x="1010" y="168" width="30" height="228"/>
+    <rect x="1150" y="186" width="21" height="210"/>
+  </g>
+  <g opacity="0.72" fill="#ffe1b8">
+    <rect x="820" y="216" width="7" height="10"/><rect x="842" y="248" width="7" height="10"/><rect x="820" y="286" width="7" height="10"/>
+    <rect x="890" y="172" width="7" height="10"/><rect x="904" y="206" width="7" height="10"/><rect x="890" y="248" width="7" height="10"/>
+    <rect x="946" y="234" width="7" height="10"/><rect x="972" y="266" width="7" height="10"/>
+    <rect x="1020" y="192" width="7" height="10"/><rect x="1032" y="230" width="7" height="10"/>
+    <rect x="1104" y="128" width="7" height="10"/><rect x="1122" y="164" width="7" height="10"/><rect x="1104" y="206" width="7" height="10"/>
+    <rect x="670" y="128" width="7" height="10"/><rect x="620" y="176" width="7" height="10"/><rect x="708" y="200" width="7" height="10"/>
+    <rect x="772" y="152" width="7" height="10"/><rect x="1058" y="168" width="7" height="10"/>
+  </g>
+
+  <g opacity="0.92">
+    <rect y="342" width="1171" height="54" fill="#0d0206"/>
+    <rect y="346" width="1171" height="4" fill="#f3a33d" opacity="0.3"/>
+    <g fill="#ffd9a0" opacity="0.55">
+      <rect x="90" y="362" width="30" height="3" rx="1.5"/><rect x="300" y="372" width="38" height="3" rx="1.5"/>
+      <rect x="540" y="362" width="30" height="3" rx="1.5"/><rect x="780" y="374" width="44" height="3" rx="1.5"/>
+      <rect x="1010" y="364" width="32" height="3" rx="1.5"/>
+    </g>
+  </g>
+
+  <g font-family="Roboto, 'Segoe UI', Arial, sans-serif">
+    <text x="48" y="146" fill="url(#word)" font-size="78" font-weight="700" letter-spacing="5">PREMAZING</text>
+    <rect x="52" y="166" width="128" height="5" rx="2.5" fill="#f3a33d"/>
+    <text x="48" y="214" fill="#ffe9d6" font-size="24">SA-MP 0.3.7 · один сервер White · ролевой проект</text>
+    <g fill="#ffffff" font-size="18">
+      <rect x="48" y="244" width="336" height="42" rx="6" fill="#ffffff" opacity="0.15"/>
+      <text x="70" y="271">Клиент — в разделе «Скачать клиент»</text>
+      <rect x="396" y="244" width="292" height="42" rx="6" fill="#ffffff" opacity="0.15"/>
+      <text x="418" y="271">White: 80.242.59.112:4141</text>
+      <rect x="700" y="244" width="252" height="42" rx="6" fill="#ffffff" opacity="0.15"/>
+      <text x="722" y="271">Discord — выдача доступа</text>
+    </g>
+  </g>
+</svg>

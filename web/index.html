@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premazing — Форум проекта SA-MP 0.3.7</title>
+  <style>
+    :root {
+      --bg-main: #090b10;
+      --bg-card: #121621;
+      --bg-card-hover: #171c2b;
+      --bg-elevated: #1c2233;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.45);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.25);
+      --accent-secondary: #a855f7;
+      --owner-gold: #f59e0b;
+      --owner-glow: rgba(245, 158, 11, 0.25);
+      --success: #10b981;
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-main);
+      background-image: 
+        radial-gradient(circle at 15% 0%, rgba(99, 102, 241, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 85% 10%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+      color: var(--text-main);
+      line-height: 1.55;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; transition: 0.2s ease; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* === НАВИГАЦИЯ === */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(9, 11, 16, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .navbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: #fff;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .brand-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: 1px solid var(--border-accent);
+    }
+
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+
+    .nav-link {
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      border-color: var(--border);
+    }
+
+    .btn-ghost:hover { background: rgba(255, 255, 255, 0.09); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    /* === БЕЙДЖ ВЛАДЕЛЬЦА === */
+    .owner-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(234, 88, 12, 0.22));
+      color: #fcd34d;
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      box-shadow: 0 0 12px var(--owner-glow);
+    }
+
+    .owner-name {
+      font-weight: 700;
+      background: linear-gradient(90deg, #fde68a, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* === HERO / МОНИТОРИНГ СЕРВЕРА === */
+    .server-banner {
+      margin: 28px 0;
+      padding: 24px 28px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, rgba(24, 29, 44, 0.9), rgba(18, 22, 33, 0.95));
+      border: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .server-banner::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent-secondary));
+    }
+
+    .server-info h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+      display: inline-block;
+    }
+
+    .server-info p { color: var(--text-muted); font-size: 0.92rem; }
+
+    .server-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+
+    .ip-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.88rem;
+      color: #c7d2fe;
+    }
+
+    .copy-btn {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover { background: var(--accent); color: #fff; }
+
+    /* === ОСНОВНАЯ СЕТКА ФОРУМА === */
+    .forum-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 960px) { .forum-layout { grid-template-columns: 1fr; } }
+
+    .category-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+
+    .category-header {
+      padding: 16px 22px;
+      background: rgba(255, 255, 255, 0.02);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .category-title {
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .forum-row {
+      display: grid;
+      grid-template-columns: 46px 1fr 100px 220px;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 22px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s ease;
+    }
+
+    .forum-row:last-child { border-bottom: none; }
+    .forum-row:hover { background: var(--bg-card-hover); }
+
+    @media (max-width: 720px) {
+      .forum-row { grid-template-columns: 42px 1fr; }
+      .forum-stats, .forum-last { display: none; }
+    }
+
+    .forum-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, 0.12);
+      color: #818cf8;
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+    }
+
+    .forum-main h3 { font-size: 1rem; font-weight: 600; margin-bottom: 3px; }
+    .forum-main h3 a:hover { color: #818cf8; }
+    .forum-main p { font-size: 0.84rem; color: var(--text-muted); }
+
+    .forum-stats { text-align: right; font-size: 0.82rem; color: var(--text-muted); }
+    .forum-stats strong { display: block; color: var(--text-main); font-size: 0.95rem; }
+
+    .forum-last {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-left: 14px;
+      border-left: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .avatar-owner {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #090b10;
+      box-shadow: 0 0 12px var(--owner-glow);
+      border: 1px solid #fde68a;
+    }
+
+    .last-meta { overflow: hidden; }
+    .last-topic {
+      display: block;
+      font-weight: 500;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .last-author { color: var(--text-dim); font-size: 0.78rem; }
+
+    /* === САЙДБАР === */
+    .sidebar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .owner-card {
+      background: linear-gradient(145deg, rgba(245, 158, 11, 0.1), rgba(18, 22, 33, 0.95));
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .owner-profile {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .owner-avatar-lg {
+      width: 48px; height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f59e0b, #ea580c);
+      color: #090b10;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      box-shadow: 0 0 18px var(--owner-glow);
+      border: 1px solid #fde68a;
+      flex-shrink: 0;
+    }
+
+    .sidebar-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .notice-box {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.84rem;
+      color: #fde68a;
+      margin-bottom: 14px;
+    }
+
+    .quick-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+    .quick-list li a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .quick-list li a:hover { background: rgba(99, 102, 241, 0.14); color: #c7d2fe; }
+
+    /* === ФОРМЫ === */
+    .forms-preview {
+      margin-top: 32px;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) { .forms-preview { grid-template-columns: 1fr; } }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .modal-card h2 {
+      font-size: 1.15rem;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+
+    .form-control {
+      width: 100%;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .form-row-2 { display: grid; grid-template-columns: 1fr 160px; gap: 12px; }
+
+    .editor-toolbar {
+      display: flex;
+      gap: 6px;
+      padding: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .tool-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .tool-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+    .editor-textarea { border-radius: 0 0 10px 10px; min-height: 120px; resize: vertical; }
+
+    .form-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+
+    .auth-status {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.84rem;
+      display: none;
+    }
+
+    footer {
+      margin-top: 50px;
+      padding: 28px 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.84rem;
+    }
+
+    .footer-inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+  </style>
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <div class="brand">
+        <div class="brand-logo">P</div>
+        <span>Premazing</span>
+        <span class="brand-badge">SA-MP 0.3.7</span>
+      </div>
+
+      <nav class="nav-links">
+        <a href="#" class="nav-link active">Форумы</a>
+        <a href="#" class="nav-link">Что нового</a>
+        <a href="#" class="nav-link">Правила</a>
+        <a href="#" class="nav-link">Discord</a>
+      </nav>
+
+      <div class="nav-actions" id="nav-user-area">
+        <a href="#login-block" class="btn btn-ghost">Войти</a>
+        <a href="#new-topic-block" class="btn btn-primary">+ Создать тему</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="server-banner">
+      <div class="server-info">
+        <h1><span class="status-dot"></span> Сервер White — Онлайн</h1>
+        <p>Клиент SA-MP 0.3.7 · Доступ выдаётся через официальный Discord проекта</p>
+      </div>
+      <div class="server-controls">
+        <div class="ip-box">
+          <span id="server-ip">80.242.59.112:4141</span>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('80.242.59.112:4141'); this.textContent='Скопировано!'">Копировать IP</button>
+        </div>
+        <a href="#" class="btn btn-primary">Скачать клиент</a>
+      </div>
+    </section>
+
+    <div class="forum-layout">
+      <div>
+        <div class="category-block">
+          <div class="category-header">
+            <div class="category-title">🎮 Игрокам</div>
+          </div>
+
+          <div class="forum-row">
+            <div class="forum-icon">🚀</div>
+            <div class="forum-main">
+              <h3><a href="#">Как зайти на сервер</a></h3>
+              <p>Пошаговая инструкция по установке клиента и подключению к White</p>
+            </div>
+            <div class="forum-stats"><strong>14</strong>тем</div>
+            <div class="forum-last">
+              <div class="avatar avatar-owner">KV</div>
+              <div class="last-meta">
+                <a href="#" class="last-topic">Быстрый старт 0.3.7</a>
+                <span class="last-author"><span class="owner-name">Kvezovs</span> · Сегодня</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="forum-row">
+            <div class="forum-icon">📥</div>
+            <div class="forum-main">
+              <h3><a href="#">Скачать клиент</a></h3>
+              <p>Чистая сборка GTA San Andreas + мультиплеер SA-MP 0.3.7</p>
+            </div>
+            <div class="forum-stats"><strong>6</strong>тем</div>
+            <div class="forum-last">
+              <div class="avatar avatar-owner">KV</div>
+              <div class="last-meta">
+                <a href="#" class="last-topic">Актуальный лаунчер</a>
+                <span class="last-author"><span class="owner-name">Kvezovs</span> · Вчера</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="forum-row">
+            <div class="forum-icon">💬</div>
+            <div class="forum-main">
+              <h3><a href="#">Discord сервера и FAQ</a></h3>
+              <p>Получение доступа к игре, ответы на частые вопросы новичков</p>
+            </div>
+            <div class="forum-stats"><strong>42</strong>темы</div>
+            <div class="forum-last">
+              <div class="avatar">MD</div>
+              <div class="last-meta">
+                <a href="#" class="last-topic">Как получить роль игрока</a>
+                <span class="last-author">Moderator · 2 ч. назад</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block">
+          <div class="category-header">
+            <div class="category-title">⚖️ Порядок и законодательство</div>
+          </div>
+
+          <div class="forum-row">
+            <div class="forum-icon">📜</div>
+            <div class="forum-main">
+              <h3><a href="#">Правила форума и Игровое законодательство</a></h3>
+              <p>Общие правила поведения, законы штата и регламент проекта</p>
+            </div>
+            <div class="forum-stats"><strong>28</strong>тем</div>
+            <div class="forum-last">
+              <div class="avatar">GV</div>
+              <div class="last-meta">
+                <a href="#" class="last-topic">Конституция и УК White</a>
+                <span class="last-author">Gov_Lead · 3 дн. назад</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="forum-row">
+            <div class="forum-icon">🛡️</div>
+            <div class="forum-main">
+              <h3><a href="#">Жалобы и Апелляции</a></h3>
+              <p>Подача жалоб на игроков/администрацию и обжалование наказаний</p>
+            </div>
+            <div class="forum-stats"><strong>195</strong>тем</div>
+            <div class="forum-last">
+              <div class="avatar">AL</div>
+              <div class="last-meta">
+                <a href="#" class="last-topic">Апелляция #1042</a>
+                <span class="last-author">Alex_White · 15 мин. назад</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-block">
+          <div class="category-header">
+            <div class="category-title">🛠️ Обратная связь</div>
+          </div>
+
+          <div class="forum-row">
+            <div class="forum-icon">🐞</div>
+            <div class="forum-main">
+              <h3><a href="#">Баг-репорты</a></h3>
+              <p>Сообщить о недоработках игрового мода, текстур или форума</p>
+            </div>
+            <div class="forum-stats"><strong>83</strong>темы</div>
+            <div class="forum-last">
+              <div class="avatar">DV</div>
+              <div class="last-meta">
+                <a href="#" class="last-topic">Исправлено: синхронизация авто</a>
+                <span class="last-author">Dev · Сегодня</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="forum-row">
+            <div class="forum-icon">💡</div>
+            <div class="forum-main">
+              <h3><a href="#">Идеи и пожелания</a></h3>
+              <p>Предложения по улучшению геймплея, систем и правил сервера</p>
+            </div>
+            <div class="forum-stats"><strong>124</strong>темы</div>
+            <div class="forum-last">
+              <div class="avatar">MK</div>
+              <div class="last-meta">
+                <a href="#" class="last-topic">Новая система тюнинга</a>
+                <span class="last-author">Mike_K · 1 ч. назад</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="forum-row">
+            <div class="forum-icon">💳</div>
+            <div class="forum-main">
+              <h3><a href="#">Проблемы с донатом и Поддержка</a></h3>
+              <p>Помощь с пополнением счёта и связь с технической поддержкой</p>
+            </div>
+            <div class="forum-stats"><strong>19</strong>тем</div>
+            <div class="forum-last">
+              <div class="avatar">SP</div>
+              <div class="last-meta">
+                <a href="#" class="last-topic">Регламент обработки заявок</a>
+                <span class="last-author">Support · Вчера</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="sidebar-card owner-card">
+          <div class="sidebar-title">
+            <span>Руководство проекта</span>
+            <span class="owner-pill">👑 Владелец</span>
+          </div>
+          <div class="owner-profile">
+            <div class="owner-avatar-lg">KV</div>
+            <div>
+              <div class="owner-name" style="font-size: 1.05rem;">Kvezovs</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">Основатель и разработчик Premazing</div>
+            </div>
+          </div>
+          <div style="font-size: 0.82rem; color: var(--text-muted); border-top: 1px solid rgba(245, 158, 11, 0.2); padding-top: 10px;">
+            Статус: <strong style="color: var(--success);">● В сети на форуме</strong>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-title">Важная информация</div>
+          <div class="notice-box">
+            ⚠️ Аккаунт форума отдельный и <strong>не связан</strong> с игровой базой данных сервера.
+          </div>
+          <ul class="quick-list">
+            <li><a href="#"><span>🎧 Discord проекта</span><span>→</span></a></li>
+            <li><a href="#"><span>📋 Правила подачи жалоб</span><span>→</span></a></li>
+            <li><a href="#"><span>💎 Пополнить счёт</span><span>→</span></a></li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <section class="forms-preview">
+      <div class="modal-card" id="login-block">
+        <h2>Вход на форум</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label">Никнейм</label>
+            <input type="text" id="login-nick" class="form-control" placeholder="Например: Kvezovs" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Пароль</label>
+            <input type="password" id="login-pass" class="form-control" placeholder="••••••••" required />
+          </div>
+          <div class="form-footer">
+            <button type="reset" class="btn btn-ghost">Отмена</button>
+            <button type="submit" class="btn btn-primary">Войти</button>
+          </div>
+          <div id="auth-msg" class="auth-status"></div>
+        </form>
+      </div>
+
+      <div class="modal-card" id="new-topic-block">
+        <h2>Новая тема</h2>
+        <form onsubmit="event.preventDefault(); alert('Тема отправлена на публикацию!');">
+          <div class="form-group">
+            <label class="form-label">Раздел форума</label>
+            <select class="form-control">
+              <option>Игрокам → FAQ</option>
+              <option>Порядок → Жалобы</option>
+              <option>Порядок → Апелляции</option>
+              <option>Обратная связь → Баг-репорты</option>
+              <option>Обратная связь → Идеи и пожелания</option>
+            </select>
+          </div>
+
+          <div class="form-row-2 form-group">
+            <div>
+              <label class="form-label">Заголовок темы</label>
+              <input type="text" class="form-control" placeholder="Кратко опишите суть..." />
+            </div>
+            <div>
+              <label class="form-label">Префикс</label>
+              <select class="form-control">
+                <option>Без префикса</option>
+                <option>Важно</option>
+                <option>На рассмотрении</option>
+                <option>Баг</option>
+                <option>Идея</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Сообщение</label>
+            <div class="editor-toolbar">
+              <button type="button" class="tool-btn"># H1</button>
+              <button type="button" class="tool-btn"><b>B</b></button>
+              <button type="button" class="tool-btn"><i>I</i></button>
+              <button type="button" class="tool-btn">• Список</button>
+              <button type="button" class="tool-btn">&lt;/&gt; Код</button>
+              <button type="button" class="tool-btn">🔗 Ссылка</button>
+            </div>
+            <textarea class="form-control editor-textarea" placeholder="Поддерживается Markdown: # заголовок, **жирный**, *курсив*, - список, `код`, ссылки..."></textarea>
+          </div>
+
+          <div class="form-footer">
+            <button type="reset" class="btn btn-ghost">Отмена</button>
+            <button type="submit" class="btn btn-primary">Опубликовать тему</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>© Premazing, 2026. Проект не связан с Take-Two Interactive, Rockstar Games и SA-MP Team.</div>
+      <div>Вёрстка форума — собственная.</div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nick = document.getElementById('login-nick').value.trim();
+      const pass = document.getElementById('login-pass').value;
+      const msg = document.getElementById('auth-msg');
+      msg.style.display = 'block';
+
+      if (nick === 'Kvezovs' && pass === 'Dimasik1982@') {
+        msg.style.background = 'rgba(16, 185, 129, 0.15)';
+        msg.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+        msg.style.color = '#6ee7b7';
+        msg.innerHTML = '✅ Добро пожаловать, <strong>Kvezovs</strong>! Вы вошли с правами <strong>Владельца форума</strong>.';
+        document.getElementById('nav-user-area').innerHTML = `
+          <span class="owner-pill">👑 Владелец · Kvezovs</span>
+          <a href="#new-topic-block" class="btn btn-primary">+ Создать тему</a>
+        `;
+      } else {
+        msg.style.background = 'rgba(239, 68, 68, 0.15)';
+        msg.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+        msg.style.color = '#fca5a5';
+        msg.textContent = '❌ Неверный логин или пароль.';
+      }
+    });
+  </script>
+
+</body>
+</html>

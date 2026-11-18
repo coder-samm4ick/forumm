@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Форум проекта Premazing — SA-MP 0.3.7, сервер White. Новости, баг-репорты, жалобы, апелляции, идеи.">
+<title>Premazing — форум проекта</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%238b1e2f'/%3E%3Cpath d='M9 24V8h7.5a4.5 4.5 0 0 1 0 9H12' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <header class="p-header">
+    <div class="p-header-inner">
+      <a class="p-header-logo" href="#/" aria-label="Premazing — на главную">
+        <svg class="wordmark" viewBox="0 0 260 48" role="img" aria-label="PREMAZING">
+          <defs>
+            <linearGradient id="wm-face" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ffd7a6"/>
+            </linearGradient>
+          </defs>
+          <text class="wordmark-text" x="0" y="34" fill="url(#wm-face)">PREMAZING</text>
+          <rect x="1" y="41" width="54" height="3" rx="1.5" fill="#f3a33d"/>
+        </svg>
+      </a>
+      <div class="p-header-slogan">SA-MP 0.3.7 · один сервер White · форум проекта</div>
+      <div class="p-header-tools">
+        <form class="header-search" id="search-form" role="search">
+          <input id="search-input" type="search" name="q" placeholder="Поиск по форуму…" aria-label="Поиск по темам" autocomplete="off" maxlength="80">
+          <button type="submit" class="header-search-submit" aria-label="Найти">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+          </button>
+        </form>
+        <button id="theme-toggle" class="theme-switch" type="button" aria-label="Переключить тему">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18z"/><path d="M12 3a9 9 0 0 1 0 18z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="p-nav">
+    <div class="p-nav-inner">
+      <a class="nav-tab" href="#/" data-tab="board">Форумы</a>
+      <a class="nav-tab" href="#/latest" data-tab="latest">Что нового</a>
+      <span class="nav-spacer"></span>
+      <span id="session-slot" class="nav-user"></span>
+    </div>
+  </nav>
+
+  <div class="p-subnav">
+    <div class="p-subnav-inner">
+      <div class="crumbs" id="crumbs"><a href="#/">Форумы</a></div>
+      <span class="subnav-opposite" id="subnav-opposite"></span>
+    </div>
+  </div>
+
+  <div class="p-body">
+    <div class="p-body-inner">
+
+      <a class="promo" href="#/forum/skachat-klient">
+        <img src="promo.svg" width="1171" height="200" alt="Premazing: клиент 0.3.7, сервер White 80.242.59.112:4141, Discord для выдачи доступа">
+      </a>
+
+      <div class="columns">
+        <div class="column column--content" id="view" aria-live="polite">
+          <div class="blockMessage">Загружаем форум…</div>
+        </div>
+        <aside class="column column--sidebar" id="sidebar"></aside>
+      </div>
+    </div>
+  </div>
+
+  <footer class="p-footer">
+    <div class="p-footer-inner">
+      <div class="footer-col footer-col--brand">
+        <div class="footer-wordmark">PREMAZING</div>
+        <p class="footer-note">Форум проекта Premazing. SA-MP 0.3.7, сервер White: <code>80.242.59.112:4141</code>. Аккаунт форума отдельный и не связан с игровой базой.</p>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Игрокам</div>
+        <a href="#/forum/kak-zaiti">Как зайти</a>
+        <a href="#/forum/skachat-klient">Скачать клиент</a>
+        <a href="#/forum/discord-servera">Discord сервера</a>
+        <a href="#/forum/faq">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Порядок</div>
+        <a href="#/forum/pravila">Правила форума</a>
+        <a href="#/forum/igrovoye-zakonodatel-stvo">Игровое законодательство</a>
+        <a href="#/forum/zhaloby-na-igroka">Жалобы</a>
+        <a href="#/forum/apellyatsii-na-nakazanie">Апелляции</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Обратная связь</div>
+        <a href="#/forum/nedorabotki-moda">Баг-репорты</a>
+        <a href="#/forum/idei-i-pozhelaniya">Идеи и пожелания</a>
+        <a href="#/forum/problemy-s-donatom">Проблемы с донатом</a>
+        <a href="https://discord.gg/R3mr4DkHP" rel="noopener noreferrer nofollow" target="_blank">Поддержка в Discord</a>
+      </div>
+    </div>
+    <div class="p-footer-base">
+      <div class="p-footer-base-inner">
+        <span>© Premazing, 2026</span>
+        <span class="footer-quiet">Вёрстка форума — собственная, в духе XenForo</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<dialog id="auth-dialog">
+  <form id="auth-form" method="dialog" class="dialog-body">
+    <h2 id="auth-title" class="dialog-title">Вход</h2>
+    <p class="dialog-hint" id="auth-hint"></p>
+    <label class="field"><span>Ник</span>
+      <input id="auth-username" name="username" autocomplete="username" maxlength="24" required>
+    </label>
+    <label class="field"><span>Пароль</span>
+      <input id="auth-password" name="password" type="password" autocomplete="current-password" minlength="8" maxlength="200" required>
+    </label>
+    <p class="form-error" id="auth-error" role="alert"></p>
+    <div class="dialog-actions">
+      <button type="button" class="button button--plain" id="auth-cancel">Отмена</button>
+      <button type="submit" class="button button--primary" id="auth-submit">Войти</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="compose-dialog">
+  <form id="compose-form" class="dialog-body">
+    <h2 id="compose-title" class="dialog-title">Новая тема</h2>
+    <label class="field" id="compose-forum-wrap"><span>Раздел</span>
+      <select id="compose-forum"></select>
+    </label>
+    <label class="field"><span>Заголовок</span>
+      <input id="compose-topic" name="title" maxlength="120" required>
+    </label>
+    <label class="field" id="compose-prefix-wrap" hidden><span>Префикс</span>
+      <select id="compose-prefix"></select>
+    </label>
+    <label class="field"><span>Сообщение</span>
+      <textarea id="compose-body" name="body" rows="10" maxlength="6000" required></textarea>
+    </label>
+    <p class="hint">Поддерживается: <code># заголовок</code>, <code>**жирный**</code>, <code>*курсив*</code>, <code>- список</code>, <code>`код`</code>, ссылки.</p>
+    <p class="form-error" id="compose-error" role="alert"></p>
+    <div class="dialog-actions">
+      <button type="button" class="button button--plain" id="compose-cancel">Отмена</button>
+      <button type="submit" class="button button--primary" id="compose-submit">Опубликовать</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="app.js" type="module"></script>
+</body>
+</html>

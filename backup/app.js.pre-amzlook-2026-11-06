@@ -1,0 +1,656 @@
+// Фронт форума Premazing. Один файл, без сборки: hash-роутер + вызовы того же origin.
+// Тело поста рендерит mini-markdown, который сначала экранирует HTML — пользовательский
+// разметочный текст не может принести тег.
+
+const API = '/functions/v1/app/api';
+
+const MESSAGES = {
+  unauthenticated: 'Нужно войти на форум.',
+  forbidden: 'Недостаточно прав для этого раздела.',
+  invalid_username: 'Ник: 3–24 символа, буквы/цифры/пробел, без точек подряд.',
+  weak_password: 'Пароль должен быть не короче 8 символов.',
+  username_taken: 'Такой ник уже занят.',
+  invalid_credentials: 'Неверный ник или пароль.',
+  invalid_title: 'Заголовок: от 3 до 120 символов.',
+  invalid_body: 'Сообщение слишком короткое или слишком длинное (максимум 6000).',
+  topic_locked: 'Тема закрыта для ответов.',
+  not_found: 'Страница или тема не найдены.',
+  database_unavailable: 'База форума недоступна — попробуй через минуту.',
+  session_unavailable: 'Не удалось создать сессию, попробуй ещё раз.',
+  write_conflict: 'Кто-то обновил эту строку раньше. Повтори действие.',
+  origin_forbidden: 'Запрос отклонён: неожиданный источник обращения.',
+  origin_not_configured: 'Источник обращения не настроен на сайте.',
+  internal: 'Внутренняя ошибка форума.',
+};
+
+const ROLE_LABEL = { admin: 'Администрация', dev: 'Разработка', helper: 'Хелпер', member: 'Игрок' };
+
+// ── мелкие утилиты ────────────────────────────────────────────────────────
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function safeHref(url) {
+  try {
+    const parsed = new URL(url);
+    return ['http:', 'https:', 'mailto:'].includes(parsed.protocol) ? parsed.href : null;
+  } catch { return null; }
+}
+
+function plural(n, one, few, many) {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+  return many;
+}
+
+function fmtDate(value) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+  const now = Date.now();
+  const diff = (now - date.getTime()) / 1000;
+  if (diff < 60) return 'только что';
+  if (diff < 3600) return `${Math.floor(diff / 60)} ${plural(Math.floor(diff / 60), 'минуту', 'минуты', 'минут')} назад`;
+  if (diff < 86400) return `сегодня в ${date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}`;
+  return date.toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
+function toast(message, isError) {
+  const box = document.getElementById('toast');
+  box.textContent = message;
+  box.classList.toggle('err', Boolean(isError));
+  box.classList.add('show');
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => box.classList.remove('show'), 4200);
+}
+
+function friendlyError(code) {
+  if (typeof code === 'string' && code.startsWith('rate_limited:')) {
+    const parts = code.split(':');
+    const seconds = Math.max(1, Number(parts[2]) || 60);
+    return `Слишком часто. Повтори через ${seconds} ${plural(seconds, 'секунду', 'секунды', 'секунд')}.`;
+  }
+  return MESSAGES[code] || 'Ошибка: ' + String(code || 'unknown');
+}
+
+// ── mini-markdown ─────────────────────────────────────────────────────────
+
+function inline(text) {
+  let html = escapeHtml(text);
+  html = html.replace(/`([^`\n]+)`/g, (_m, code) => `<code class="inline">${code}</code>`);
+  html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+  html = html.replace(/\[([^\]\n]{1,120})\]\(([^)\s]{1,300})\)/g, (match, label, raw) => {
+    const href = safeHref(raw.replace(/&amp;/g, '&'));
+    return href ? `<a href="${href}" rel="noopener noreferrer nofollow" target="_blank">${label}</a>` : match;
+  });
+  html = html.replace(/(^|[\s(])(https?:\/\/[^\s<)\]]{5,240})/g, (match, head, raw) => {
+    const href = safeHref(raw);
+    return href ? `${head}<a href="${href}" rel="noopener noreferrer nofollow" target="_blank">${escapeHtml(raw)}</a>` : match;
+  });
+  return html;
+}
+
+function renderBody(source) {
+  const lines = String(source).replace(/\r\n?/g, '\n').split('\n');
+  const out = [];
+  let paragraph = [];
+  let list = [];
+  let quote = [];
+  let fence = null;
+
+  const flushParagraph = () => {
+    if (paragraph.length === 0) return;
+    out.push(`<p>${paragraph.map(inline).join('<br>')}</p>`);
+    paragraph = [];
+  };
+  const flushList = () => {
+    if (list.length === 0) return;
+    out.push(`<ul>${list.map((item) => `<li>${inline(item)}</li>`).join('')}</ul>`);
+    list = [];
+  };
+  const flushQuote = () => {
+    if (quote.length === 0) return;
+    out.push(`<blockquote>${quote.map(inline).join('<br>')}</blockquote>`);
+    quote = [];
+  };
+  const flushAll = () => { flushParagraph(); flushList(); flushQuote(); };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trimEnd();
+    if (fence !== null) {
+      if (line.trim() === '```') {
+        out.push(`<pre>${escapeHtml(fence.join('\n'))}</pre>`);
+        fence = null;
+      } else fence.push(line);
+      continue;
+    }
+    if (line.trim() === '```') { flushAll(); fence = []; continue; }
+    if (line.trim() === '') { flushAll(); continue; }
+
+    const heading = /^(#{1,3})\s+(.{1,120})$/.exec(line.trim());
+    if (heading) { flushAll(); const level = heading[1].length + 1; out.push(`<h${level}>${inline(heading[2])}</h${level}>`); continue; }
+    const bullet = /^[-•]\s+(.{1,600})$/.exec(line.trim());
+    if (bullet) { flushParagraph(); flushQuote(); list.push(bullet[1]); continue; }
+    const quoted = /^>\s?(.{1,600})$/.exec(line.trim());
+    if (quoted) { flushParagraph(); flushList(); quote.push(quoted[1]); continue; }
+    paragraph.push(line);
+  }
+  flushAll();
+  if (fence !== null) out.push(`<pre>${escapeHtml(fence.join('\n'))}</pre>`);
+  return out.join('');
+}
+
+// ── HTTP ──────────────────────────────────────────────────────────────────
+
+async function api(path, options = {}) {
+  const response = await fetch(API + path, {
+    method: options.method || 'GET',
+    headers: options.body ? { 'content-type': 'application/json' } : undefined,
+    body: options.body ? JSON.stringify(options.body) : undefined,
+    credentials: 'same-origin',
+  });
+  let payload = null;
+  try { payload = await response.json(); } catch { payload = null; }
+  if (!response.ok) {
+    const error = new Error(friendlyError(payload?.error));
+    error.code = payload?.error || `http_${response.status}`;
+    error.status = response.status;
+    throw error;
+  }
+  return payload;
+}
+
+const state = { board: null, me: null };
+
+// ── сессия в шапке ────────────────────────────────────────────────────────
+
+function renderSession(me) {
+  state.me = me;
+  const slot = document.getElementById('session-slot');
+  if (!me) {
+    slot.innerHTML = '<button class="btn btn-sm" data-action="login">Вход</button>'
+      + '<button class="btn btn-sm btn-primary" data-action="register">Регистрация</button>';
+    return;
+  }
+  slot.innerHTML = `<span class="who">${escapeHtml(me.username)}</span>`
+    + `<span class="role">${escapeHtml(ROLE_LABEL[me.role] || 'Игрок')}</span>`
+    + '<button class="btn btn-quiet btn-sm" data-action="logout">Выйти</button>';
+}
+
+// ── боковая колонка ───────────────────────────────────────────────────────
+
+function renderSidebar(stats) {
+  const sidebar = document.getElementById('sidebar');
+  if (!stats) { sidebar.innerHTML = ''; return; }
+  sidebar.innerHTML = `
+    <div class="block start-box">
+      <div class="block-title">Как попасть в игру</div>
+      <div class="block-body">
+        <div>1. Скачай клиент из раздела <a href="#/forum/skachat-klient">«Скачать клиент»</a>.</div>
+        <div>2. Зайди в <a href="https://discord.gg/R3mr4DkHP" rel="noopener noreferrer nofollow" target="_blank">Discord</a>, там выдача и поддержка.</div>
+        <div>3. В игре: <code>/reg</code> → <code>/login</code>.</div>
+        <div class="server-line">80.242.59.112:4141 · 50 слотов</div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="block-title">Статистика</div>
+      <div class="block-body">
+        <dl>
+          <dt>Темы</dt><dd>${stats.topic_count.toLocaleString('ru-RU')}</dd>
+          <dt>Сообщения</dt><dd>${stats.post_count.toLocaleString('ru-RU')}</dd>
+          <dt>Игроки</dt><dd>${stats.member_count.toLocaleString('ru-RU')}</dd>
+          <dt>Новый аккаунт</dt><dd>${stats.newest_member ? escapeHtml(stats.newest_member) : '—'}</dd>
+          <dt>Активность</dt><dd>${stats.last_post_at ? fmtDate(stats.last_post_at) : '—'}</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="block">
+      <div class="block-title">Правила форума</div>
+      <div class="block-body">
+        <ul class="mini-list">
+          <li>Один игрок — один аккаунт на форуме.</li>
+          <li>Жалобы и апелляции — только в специальных разделах.</li>
+          <li>Данные входа в игру и админ-пароли не публикуем.</li>
+        </ul>
+      </div>
+    </div>`;
+}
+
+// ── карточки разделов ─────────────────────────────────────────────────────
+
+function lastTopicCell(topic) {
+  if (!topic) return '<div class="node-latest"><span class="muted">Пока пусто</span></div>';
+  return `<div class="node-latest">
+    <a class="topic-link" href="#/topic/${topic.id}">${escapeHtml(topic.title)}</a>
+    <div>${fmtDate(topic.last_post_at)} · ${escapeHtml(topic.last_poster_name)}</div>
+  </div>`;
+}
+
+function nodeIcon(title) {
+  return `<div class="node-icon">${escapeHtml(title.trim().charAt(0).toUpperCase() || 'P')}</div>`;
+}
+
+function viewBoard(board) {
+  const categories = board.categories.map((category) => {
+    const rows = category.forums.map((forum) => {
+      if (forum.external_url) {
+        const href = safeHref(forum.external_url);
+        return `<div class="node is-external">
+          ${nodeIcon(forum.title)}
+          <div class="node-main">
+            <a class="node-title" href="${href || '#'}" rel="noopener noreferrer nofollow" target="_blank">${escapeHtml(forum.title)} ↗</a>
+            <div class="node-desc">${escapeHtml(forum.description)}</div>
+          </div>
+          <div class="node-counts"><span class="muted">внешняя ссылка</span></div>
+          <div class="node-latest"></div>
+        </div>`;
+      }
+      return `<div class="node">
+        ${nodeIcon(forum.title)}
+        <div class="node-main">
+          <a class="node-title" href="#/forum/${forum.id}">${escapeHtml(forum.title)}</a>
+          <div class="node-desc">${escapeHtml(forum.description)}</div>
+          ${forum.read_role !== 'guest' ? `<div class="node-desc"><span class="badge lock">роль: ${escapeHtml(forum.read_role)}</span></div>` : ''}
+        </div>
+        <div class="node-counts"><b>${forum.topic_count.toLocaleString('ru-RU')}</b> ${plural(forum.topic_count, 'тема', 'темы', 'тем')}<br>
+          <b>${forum.post_count.toLocaleString('ru-RU')}</b> ${plural(forum.post_count, 'сообщение', 'сообщения', 'сообщений')}</div>
+        ${lastTopicCell(forum.last_topic)}
+      </div>`;
+    }).join('');
+    return `<section class="category">
+      <div class="cat-head-row"><h2 class="category-title">${escapeHtml(category.title)}</h2></div>
+      ${rows || '<div class="empty">В категории пока нет разделов.</div>'}
+    </section>`;
+  }).join('');
+
+  return `<div class="bar"><h1>Форум Premazing</h1>
+      <button class="btn btn-primary" data-action="new-topic">Создать тему</button></div>
+    ${categories || '<div class="empty">Разделы ещё не созданы.</div>'}`;
+}
+
+function pager(page, hasMore, base) {
+  const parts = [];
+  if (page > 1) parts.push(`<a href="${base}&page=${page - 1}">← назад</a>`);
+  parts.push(`<span class="now">стр. ${page}</span>`);
+  if (hasMore) parts.push(`<a href="${base}&page=${page + 1}">вперёд →</a>`);
+  return `<div class="pager">${parts.join('')}</div>`;
+}
+
+const PREFIX_CLASS = {
+  'ОТКРЫТО': 'open', 'ЗАКРЕПЛЕНО': 'pin', 'РЕШЕНО': 'open', 'ВАЖНО': 'lock', 'АНОНС': 'pin',
+};
+
+function prefixBadges(topic) {
+  const out = [];
+  if (topic.prefix) out.push(`<span class="badge ${PREFIX_CLASS[topic.prefix] || ''}">${escapeHtml(topic.prefix)}</span>`);
+  if (topic.is_pinned) out.push('<span class="badge pin">Закреплено</span>');
+  if (topic.is_locked) out.push('<span class="badge lock">Закрыто</span>');
+  return out.join('');
+}
+
+function viewForum(data) {
+  const rows = data.topics.map((topic) => `<div class="thread${topic.is_pinned ? ' is-pinned' : ''}">
+      <div>
+        <a class="thread-title" href="#/topic/${topic.id}">${prefixBadges(topic)}${escapeHtml(topic.title)}</a>
+        <div class="thread-meta">${escapeHtml(topic.author_name)} · ${fmtDate(topic.created_at)}</div>
+      </div>
+      <div class="thread-num"><b>${topic.replies}</b>отв.</div>
+      <div class="thread-num"><b>${topic.views}</b>просм.</div>
+      <div class="thread-last">${fmtDate(topic.last_post_at)}<a href="#/topic/${topic.id}">${escapeHtml(topic.last_poster_name)}</a></div>
+    </div>`).join('');
+
+  return `<div class="breadcrumbs"><a href="#/">Форум</a> › ${escapeHtml(data.forum.title)}</div>
+    <div class="bar"><h1>${escapeHtml(data.forum.title)}</h1>
+      ${data.can_write ? `<button class="btn btn-primary" data-action="new-topic" data-forum="${data.forum.id}">Создать тему</button>`
+        : `<span class="muted">${data.forum.read_role !== 'guest' ? 'Раздел для персонала' : 'Нужна регистрация'}</span>`}</div>
+    <p class="hint">${escapeHtml(data.forum.description)}</p>
+    <div class="list">
+      <div class="list-head"><span>Тема</span><span>Ответы</span><span>Просмотры</span><span>Последнее</span></div>
+      ${rows || '<div class="empty">В разделе пока нет тем.</div>'}
+    </div>
+    ${pager(data.page, data.has_more, `#/forum/${data.forum.id}?`)}`;
+}
+
+function viewTopic(data) {
+  const posts = data.posts.map((post) => `<article class="post" id="post-${post.floor}">
+      <div class="post-side">
+        <div class="name">${escapeHtml(post.author_name)}</div>
+        <div class="role">${escapeHtml(ROLE_LABEL[post.author_role] || 'Игрок')}</div>
+      </div>
+      <div class="post-main">
+        <div class="post-head"><span>#${post.floor}</span><span>${fmtDate(post.created_at)}${post.edited_at ? ' · изменено' : ''}</span></div>
+        <div class="post-body">${renderBody(post.body)}</div>
+        ${data.can_moderate ? `<div class="post-actions">
+            ${post.floor === 1 ? `<button class="btn btn-quiet btn-sm" data-action="pin" data-id="${data.topic.id}" data-on="${!data.topic.is_pinned}">${data.topic.is_pinned ? 'Открепить' : 'Закрепить'}</button>
+            <button class="btn btn-quiet btn-sm" data-action="lock" data-id="${data.topic.id}" data-on="${!data.topic.is_locked}">${data.topic.is_locked ? 'Открыть' : 'Закрыть'}</button>
+            <button class="btn btn-quiet btn-sm" data-action="delete" data-id="${data.topic.id}">Удалить тему</button>` : ''}
+          </div>` : ''}
+      </div>
+    </article>`).join('');
+
+  const reply = data.can_reply ? `<form class="reply-box" id="reply-form">
+      <h2>Ответить</h2>
+      <label class="field"><span>Сообщение</span><textarea id="reply-body" rows="6" maxlength="6000" required></textarea></label>
+      <p class="hint">Поддерживается: <code># заголовок</code>, <code>**жирный**</code>, <code>*курсив*</code>, <code>- список</code>, <code>\`код\`</code>, ссылки.</p>
+      <p class="form-error" id="reply-error"></p>
+      <button class="btn btn-primary" type="submit">Отправить</button>
+    </form>`
+    : `<div class="notice">${data.topic.is_locked ? 'Тема закрыта — ответы недоступны.' : 'Чтобы отвечать, войди или зарегистрируйся.'}</div>`;
+
+  return `<div class="breadcrumbs"><a href="#/">Форум</a> › <a href="#/forum/${data.forum.id}">${escapeHtml(data.forum.title)}</a></div>
+    <div class="bar"><h1>${prefixBadges(data.topic)}${escapeHtml(data.topic.title)}</h1></div>
+    <p class="hint">${data.topic.replies} ${plural(data.topic.replies, 'ответ', 'ответа', 'ответов')} · ${data.topic.views} ${plural(data.topic.views, 'просмотр', 'просмотра', 'просмотров')} · страницы ${data.page} из ${Math.max(1, Math.ceil(data.total_posts / data.posts_per_page))}</p>
+    ${pager(data.page, data.page * data.posts_per_page < data.total_posts, `#/topic/${data.topic.id}?`)}
+    ${posts || '<div class="empty">Сообщения не найдены.</div>'}
+    ${reply}`;
+}
+
+function viewLatest(data) {
+  const rows = data.items.map((item) => `<div class="thread">
+      <div>
+        <a class="thread-title" href="#/topic/${item.topic_id}#post-${item.floor}">${escapeHtml(item.topic_title)}</a>
+        <div class="thread-meta">${escapeHtml(item.author_name)} · <a href="#/forum/${item.forum_id}">${escapeHtml(item.forum_title)}</a></div>
+        <div class="thread-meta">${escapeHtml(item.excerpt)}${item.excerpt.length >= 180 ? '…' : ''}</div>
+      </div>
+      <div class="thread-num"><b>#${item.floor}</b></div>
+      <div class="thread-num"></div>
+      <div class="thread-last">${fmtDate(item.created_at)}</div>
+    </div>`).join('');
+  return `<div class="bar"><h1>Новые сообщения</h1></div>
+    <div class="list">
+      <div class="list-head"><span>Тема</span><span>Этаж</span><span></span><span>Когда</span></div>
+      ${rows || '<div class="empty">Свежих сообщений нет.</div>'}
+    </div>
+    ${pager(data.page, data.has_more, '#/latest?')}`;
+}
+
+function viewSearch(data) {
+  const rows = data.items.map((topic) => `<div class="thread">
+      <div><a class="thread-title" href="#/topic/${topic.id}">${prefixBadges(topic)}${escapeHtml(topic.title)}</a>
+        <div class="thread-meta">${escapeHtml(topic.author_name)} · <a href="#/forum/${topic.forum_id}">${escapeHtml(topic.forum_title)}</a></div></div>
+      <div class="thread-num"><b>${topic.replies}</b>отв.</div><div class="thread-num"></div>
+      <div class="thread-last">${fmtDate(topic.last_post_at)}</div>
+    </div>`).join('');
+  return `<div class="bar"><h1>Поиск: ${escapeHtml(data.query)}</h1></div>
+    <p class="hint">Совпадений: ${data.items.length}. Ищем по заголовкам свежих ${data.scanned} тем.</p>
+    <div class="list">${rows || '<div class="empty">Ничего не найдено. Попробуй другое слово.</div>'}</div>`;
+}
+
+// ── роутер ────────────────────────────────────────────────────────────────
+
+function parseHash() {
+  // Хэш вида #/topic/<uuid>?page=2#post-7: ссылку на конкретный этаж носим во втором фрагменте.
+  const raw = location.hash.replace(/^#\/?/, '');
+  const [location_, anchor = ''] = raw.split('#');
+  const [path, query = ''] = location_.split('?');
+  const parts = path.split('/').filter(Boolean);
+  return { parts, params: new URLSearchParams(query), anchor };
+}
+
+let token = 0;
+
+async function route() {
+  const myToken = ++token;
+  const { parts, params, anchor } = parseHash();
+  const view = document.getElementById('view');
+  const page = params.get('page') || '1';
+  document.querySelectorAll('.tabs a').forEach((link) => {
+    const isBoard = parts.length === 0 && link.dataset.tab === 'board';
+    link.classList.toggle('is-active', isBoard || link.dataset.tab === parts[0]);
+  });
+
+  try {
+    if (parts.length === 0) {
+      const board = await api('/board');
+      if (myToken !== token) return;
+      state.board = board;
+      renderSession(board.me);
+      renderSidebar(board.stats);
+      view.innerHTML = viewBoard(board);
+    } else if (parts[0] === 'forum' || parts[0] === 'node') {
+      if (!state.board) state.board = await api('/board');
+      const id = resolveForumId(parts[1]);
+      if (!id) { view.innerHTML = '<div class="empty">Раздел не найден. Проверь ссылку.</div>'; return; }
+      const data = await api(`/forum?id=${encodeURIComponent(id)}&page=${encodeURIComponent(page)}`);
+      if (myToken !== token) return;
+      renderSession(data.me);
+      view.innerHTML = viewForum(data);
+    } else if (parts[0] === 'topic') {
+      const data = await api(`/topic?id=${encodeURIComponent(parts[1])}&page=${encodeURIComponent(page)}`);
+      if (myToken !== token) return;
+      renderSession(data.me);
+      view.innerHTML = viewTopic(data);
+      const form = document.getElementById('reply-form');
+      if (form) form.addEventListener('submit', submitReply(data));
+    } else if (parts[0] === 'latest') {
+      const data = await api(`/latest?page=${encodeURIComponent(page)}`);
+      if (myToken !== token) return;
+      renderSession(data.me);
+      if (!state.board) { state.board = await api('/board'); renderSidebar(state.board.stats); }
+      view.innerHTML = viewLatest(data);
+    } else if (parts[0] === 'search') {
+      const query = params.get('q') || '';
+      if (query.trim().length < 2) { view.innerHTML = '<div class="empty">Введи минимум 2 символа.</div>'; return; }
+      const data = await api(`/search?q=${encodeURIComponent(query)}`);
+      if (myToken !== token) return;
+      renderSession(data.me);
+      view.innerHTML = viewSearch(data);
+    } else {
+      view.innerHTML = '<div class="empty">Такой страницы нет.</div>';
+    }
+    const target = anchor ? document.getElementById(anchor) : null;
+    if (target) target.scrollIntoView({ block: 'center' });
+    else window.scrollTo({ top: 0 });
+  } catch (error) {
+    if (myToken !== token) return;
+    view.innerHTML = `<div class="empty">${escapeHtml(error.message || 'Ошибка загрузки')}</div>`;
+    if (error.code === 'unauthenticated') openAuth('login');
+  }
+}
+
+function resolveForumId(value) {
+  if (!value) return null;
+  if (/^[0-9a-f-]{36}$/i.test(value)) return value;
+  if (!state.board) return null;
+  for (const category of state.board.categories) {
+    const hit = category.forums.find((forum) => forum.slug === value);
+    if (hit) return hit.id;
+  }
+  return null;
+}
+
+// ── диалоги: вход, регистрация, новая тема ────────────────────────────────
+
+const authDialog = document.getElementById('auth-dialog');
+const composeDialog = document.getElementById('compose-dialog');
+let authMode = 'login';
+
+function openAuth(mode) {
+  authMode = mode;
+  document.getElementById('auth-title').textContent = mode === 'register' ? 'Регистрация' : 'Вход';
+  document.getElementById('auth-submit').textContent = mode === 'register' ? 'Создать аккаунт' : 'Войти';
+  document.getElementById('auth-hint').textContent = mode === 'register'
+    ? 'Ник — как в игре или свой собственный; пароль не менее 8 символов. Аккаунт форума не связан с игровой базой.'
+    : 'Сессия живёт 30 дней на этом браузере.';
+  document.getElementById('auth-password').autocomplete = mode === 'register' ? 'new-password' : 'current-password';
+  document.getElementById('auth-error').textContent = '';
+  authDialog.showModal();
+  document.getElementById('auth-username').focus();
+}
+
+function writeableForums() {
+  return (state.board?.categories || []).flatMap((category) => category.forums)
+    .filter((forum) => !forum.external_url && forum.write_role === 'member');
+}
+
+function openCompose(forumId) {
+  document.getElementById('compose-error').textContent = '';
+  const forumSelect = document.getElementById('compose-forum');
+  const forumWrap = document.getElementById('compose-forum-wrap');
+  const prefixSelect = document.getElementById('compose-prefix');
+  const prefixWrap = document.getElementById('compose-prefix-wrap');
+
+  const chosen = forumId ? resolveForumId(forumId) : null;
+  if (forumId && !chosen) { toast('Раздел не найден', true); return; }
+
+  const options = writeableForums();
+  if (chosen) {
+    forumWrap.hidden = true;
+    forumSelect.innerHTML = `<option value="${chosen}">${escapeHtml(nameOfForum(chosen))}</option>`;
+  } else {
+    forumWrap.hidden = false;
+    forumSelect.innerHTML = options
+      .map((forum) => `<option value="${forum.id}">${escapeHtml(forum.title)}</option>`).join('');
+  }
+  syncPrefixes(prefixSelect, prefixWrap, forumSelect.value);
+  forumSelect.onchange = () => syncPrefixes(prefixSelect, prefixWrap, forumSelect.value);
+
+  composeDialog.showModal();
+  document.getElementById('compose-topic').focus();
+}
+
+function allForums() {
+  return (state.board?.categories || []).flatMap((category) => category.forums);
+}
+
+function syncPrefixes(prefixSelect, prefixWrap, forumId) {
+  const forum = allForums().find((candidate) => candidate.id === forumId);
+  const prefixes = (Array.isArray(forum?.prefixes) ? forum.prefixes : []).filter((value) => typeof value === 'string' && value);
+  prefixWrap.hidden = prefixes.length === 0;
+  prefixSelect.innerHTML = '<option value="">без префикса</option>'
+    + prefixes.map((prefix) => `<option value="${escapeHtml(prefix)}">${escapeHtml(prefix)}</option>`).join('');
+}
+
+function nameOfForum(id) {
+  return allForums().find((candidate) => candidate.id === id)?.title || 'Раздел';
+}
+
+async function submitReply(data) {
+  return async (event) => {
+    event.preventDefault();
+    const body = document.getElementById('reply-body').value;
+    const errorBox = document.getElementById('reply-error');
+    const button = event.target.querySelector('button[type=submit]');
+    button.disabled = true;
+    try {
+      const created = await api('/reply', { method: 'POST', body: { topic_id: data.topic.id, body } });
+      toast('Ответ опубликован');
+      const floor = created.post.floor;
+      const page = Math.min(500, Math.max(1, Math.ceil(floor / data.posts_per_page)));
+      location.hash = `#/topic/${data.topic.id}?page=${page}#post-${floor}`;
+      route();
+    } catch (error) {
+      errorBox.textContent = error.message;
+      if (error.code === 'unauthenticated') openAuth('login');
+    } finally { button.disabled = false; }
+  };
+}
+
+// ── обработчики кликов ────────────────────────────────────────────────────
+
+document.addEventListener('click', async (event) => {
+  const trigger = event.target.closest('[data-action]');
+  if (!trigger) return;
+  const action = trigger.dataset.action;
+
+  if (action === 'login') { openAuth('login'); return; }
+  if (action === 'register') { openAuth('register'); return; }
+  if (action === 'new-topic') {
+    if (!state.me) { openAuth('login'); return; }
+    openCompose(trigger.dataset.forum);
+    return;
+  }
+  if (action === 'logout') {
+    trigger.disabled = true;
+    try { await api('/logout', { method: 'POST', body: {} }); state.board = null; await route(); toast('Вы вышли'); }
+    catch (error) { toast(error.message, true); }
+    finally { trigger.disabled = false; }
+    return;
+  }
+  if (['pin', 'lock', 'delete'].includes(action)) {
+    const map = { pin: 'pin', lock: 'lock', delete: 'delete_topic' };
+    if (action === 'delete' && !confirm('Удалить тему? Её не видно будет игрокам.')) return;
+    trigger.disabled = true;
+    try {
+      await api('/moderate', { method: 'POST', body: { action: map[action], topic_id: trigger.dataset.id } });
+      toast('Готово');
+      route();
+    } catch (error) { toast(error.message, true); trigger.disabled = false; }
+  }
+});
+
+document.getElementById('auth-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const errorBox = document.getElementById('auth-error');
+  const button = document.getElementById('auth-submit');
+  errorBox.textContent = '';
+  button.disabled = true;
+  try {
+    const payload = {
+      username: document.getElementById('auth-username').value,
+      password: document.getElementById('auth-password').value,
+    };
+    const data = await api(authMode === 'register' ? '/register' : '/login', { method: 'POST', body: payload });
+    renderSession(data.me);
+    state.board = null;
+    authDialog.close();
+    toast(authMode === 'register' ? 'Аккаунт создан' : `Привет, ${data.me.username}`);
+    route();
+  } catch (error) {
+    errorBox.textContent = error.message;
+  } finally { button.disabled = false; }
+});
+
+document.getElementById('compose-form').addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const errorBox = document.getElementById('compose-error');
+  const button = document.getElementById('compose-submit');
+  errorBox.textContent = '';
+  const payload = {
+    forum_id: document.getElementById('compose-forum').value,
+    title: document.getElementById('compose-topic').value,
+    body: document.getElementById('compose-body').value,
+    prefix: document.getElementById('compose-prefix').value,
+  };
+  if (!payload.forum_id) { errorBox.textContent = 'Не выбран раздел.'; return; }
+  button.disabled = true;
+  try {
+    const data = await api('/topic/create', { method: 'POST', body: payload });
+    composeDialog.close();
+    document.getElementById('compose-topic').value = '';
+    document.getElementById('compose-body').value = '';
+    toast('Тема опубликована');
+    location.hash = `#/topic/${data.topic_id}`;
+    route();
+  } catch (error) {
+    errorBox.textContent = error.message;
+    if (error.code === 'unauthenticated') { composeDialog.close(); openAuth('login'); }
+  } finally { button.disabled = false; }
+});
+
+document.getElementById('auth-cancel').addEventListener('click', () => authDialog.close());
+document.getElementById('compose-cancel').addEventListener('click', () => composeDialog.close());
+
+document.getElementById('search-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const value = document.getElementById('search-input').value.trim();
+  if (value.length < 2) { toast('Минимум 2 символа', true); return; }
+  location.hash = `#/search?q=${encodeURIComponent(value)}`;
+});
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('premaze-theme', next);
+});
+
+const savedTheme = localStorage.getItem('premaze-theme');
+if (savedTheme === 'dark') document.documentElement.dataset.theme = 'dark';
+
+window.addEventListener('hashchange', route);
+route();
