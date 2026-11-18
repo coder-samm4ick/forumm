@@ -953,38 +953,10 @@
         .map(l => `<div class="log-item">${l}</div>`).join("");
     }
 
-    init();
+        init();
   </script>
-  <!-- Модальное окно Входа и Регистрации (Firebase) -->
-  <div id="authModal" class="modal-overlay">
-    <div class="modal" style="max-width:420px;">
-      <div class="modal-header">
-        <h3 id="authModalTitle">Вход на форум</h3>
-        <button class="close-btn" onclick="closeModal('authModal')">✕</button>
-      </div>
-      <div style="display:flex; gap:8px; margin-bottom:15px;">
-        <button class="btn btn-ghost" style="flex:1;" id="tabLoginMode" onclick="setAuthMode(false)">Вход</button>
-        <button class="btn btn-ghost" style="flex:1;" id="tabRegMode" onclick="setAuthMode(true)">Регистрация</button>
-      </div>
-      <div class="form-group" id="regNickGroup" style="display:none;">
-        <label>Игровой никнейм (Имя_Фамилия)</label>
-        <input type="text" id="authNickInput" placeholder="Например: Ivan_Ivanov" />
-      </div>
-      <div class="form-group">
-        <label>Электронная почта (Email)</label>
-        <input type="email" id="authEmailInput" placeholder="player@premazing.ru" />
-      </div>
-      <div class="form-group">
-        <label>Пароль (минимум 6 символов)</label>
-        <input type="password" id="authPassInput" placeholder="••••••••" />
-      </div>
-      <div id="authErrorMsg" style="color:var(--danger); font-size:13px; margin-bottom:12px;"></div>
-      <button class="btn" style="width:100%;" id="authSubmitBtn" onclick="submitFirebaseAuth()">Войти на форум</button>
-    </div>
-  </div>
 
-  <script type="module">
-    <script src="https://gstatic.com"></script>
+  <script src="https://gstatic.com"></script>
   <script src="https://gstatic.com"></script>
   <script src="https://gstatic.com"></script>
 
