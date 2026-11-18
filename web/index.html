@@ -18,62 +18,29 @@
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background: var(--bg-main); color: var(--text-main); line-height: 1.5; }
-
-    .banner-maint {
-      background: #991b1b; color: #fff; text-align: center; padding: 8px;
-      font-weight: 600; font-size: 14px; display: none;
-    }
-    .banner-announce {
-      background: linear-gradient(90deg, #4f46e5, #7c3aed); color: #fff;
-      text-align: center; padding: 10px; font-size: 14px; font-weight: 500; display: none;
-    }
-
-    header {
-      background: var(--bg-card); border-bottom: 1px solid var(--border);
-      padding: 15px 30px; display: flex; justify-content: space-between;
-      align-items: center; flex-wrap: wrap; gap: 15px;
-    }
+    .banner-maint { background: #991b1b; color: #fff; text-align: center; padding: 8px; font-weight: 600; font-size: 14px; display: none; }
+    .banner-announce { background: linear-gradient(90deg, #4f46e5, #7c3aed); color: #fff; text-align: center; padding: 10px; font-size: 14px; font-weight: 500; display: none; }
+    header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
     .logo { font-size: 22px; font-weight: 800; letter-spacing: 1px; color: #fff; }
     .logo span { color: var(--accent); }
     .nav-tabs { display: flex; gap: 10px; }
-    .nav-btn {
-      background: transparent; border: 1px solid var(--border); color: var(--text-main);
-      padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s;
-    }
+    .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: 0.2s; }
     .nav-btn.active, .nav-btn:hover { background: var(--accent); border-color: var(--accent); }
-
     .user-box { display: flex; align-items: center; gap: 10px; font-size: 14px; }
-    select, input, textarea {
-      background: #0f1117; border: 1px solid var(--border); color: #fff;
-      padding: 8px 12px; border-radius: 6px; outline: none; font-size: 14px;
-    }
+    select, input, textarea { background: #0f1117; border: 1px solid var(--border); color: #fff; padding: 8px 12px; border-radius: 6px; outline: none; font-size: 14px; }
     select:focus, input:focus, textarea:focus { border-color: var(--accent); }
-
     .container { max-width: 1250px; margin: 25px auto; padding: 0 20px; }
     .grid-forum { display: grid; grid-template-columns: 260px 1fr; gap: 25px; }
     @media (max-width: 850px) { .grid-forum { grid-template-columns: 1fr; } }
-
-    .card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 10px; padding: 18px; margin-bottom: 20px;
-    }
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 20px; }
     .card-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-
-    .cat-item {
-      padding: 9px 12px; border-radius: 6px; cursor: pointer; display: flex;
-      justify-content: space-between; color: var(--text-muted); margin-bottom: 4px;
-    }
+    .cat-item { padding: 9px 12px; border-radius: 6px; cursor: pointer; display: flex; justify-content: space-between; color: var(--text-muted); margin-bottom: 4px; }
     .cat-item:hover, .cat-item.active { background: var(--bg-hover); color: #fff; font-weight: 600; }
     .stat-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; color: var(--text-muted); }
     .stat-row b { color: #fff; }
-
-    .btn {
-      background: var(--accent); color: #fff; border: none; padding: 8px 15px;
-      border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s;
-    }
+    .btn { background: var(--accent); color: #fff; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.2s; }
     .btn:hover { background: var(--accent-hover); }
     .btn-sm { padding: 5px 10px; font-size: 12px; }
     .btn-danger { background: var(--danger); }
@@ -81,77 +48,52 @@
     .btn-warning { background: var(--warning); color: #000; }
     .btn-success { background: var(--success); color: #000; }
     .btn-ghost { background: var(--bg-hover); border: 1px solid var(--border); }
-
     .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-    .topic-row {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
-      padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between;
-      align-items: center; cursor: pointer; transition: 0.2s;
-    }
+    .topic-row { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
     .topic-row:hover { border-color: var(--accent); background: var(--bg-hover); }
     .topic-row.pinned { border-left: 4px solid var(--warning); }
     .topic-title { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
     .topic-meta { font-size: 13px; color: var(--text-muted); }
-
     .badge { padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
     .badge-pin { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
     .badge-lock { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
     .badge-cat { background: rgba(99, 102, 241, 0.2); color: #818cf8; }
     .user-prefix { padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 700; margin-right: 4px; }
-
     .acp-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 20px; }
     .stat-box { background: var(--bg-card); border: 1px solid var(--border); padding: 15px; border-radius: 8px; }
     .stat-box span { font-size: 13px; color: var(--text-muted); }
     .stat-box h2 { font-size: 26px; margin-top: 5px; }
-
     table { width: 100%; border-collapse: collapse; font-size: 14px; }
     th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); }
     th { color: var(--text-muted); font-weight: 600; }
     .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
-
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
-      display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
-    }
-    .modal {
-      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
-      width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; padding: 22px;
-    }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; padding: 22px; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
     .close-btn { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; }
     .form-group { margin-bottom: 14px; }
     .form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
     .form-group input, .form-group select, .form-group textarea { width: 100%; }
-
-    .post-item {
-      background: #12141c; border: 1px solid var(--border); border-radius: 8px;
-      padding: 14px; margin-bottom: 12px;
-    }
+    .post-item { background: #12141c; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 12px; }
     .post-header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; border-bottom: 1px solid #1f2330; padding-bottom: 6px; }
     .post-body { font-size: 14px; white-space: pre-wrap; }
-
-    .maint-screen {
-      text-align: center; padding: 80px 20px; background: var(--bg-card);
-      border: 1px solid var(--border); border-radius: 12px; margin-top: 40px;
-    }
+    .maint-screen { text-align: center; padding: 80px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-top: 40px; }
     .log-item { font-family: monospace; font-size: 13px; padding: 8px; border-bottom: 1px solid var(--border); color: #d1d5db; }
   </style>
 </head>
-<body>
 
-  <div id="maintBanner" class="banner-maint">
-    ⚠ ВНИМАНИЕ: На форуме включен режим технических работ. Обычные пользователи видят заглушку.
-  </div>
+<body>
+  <div id="maintBanner" class="banner-maint">⚠ ВНИМАНИЕ: На форуме включен режим технических работ. Обычные пользователи видят заглушку.</div>
   <div id="announceBanner" class="banner-announce"></div>
 
   <header>
     <div class="logo">PREMAZING <span>ONLINE</span></div>
     <div class="nav-tabs">
       <button class="nav-btn active" id="tabForumBtn" onclick="switchMainView('forum')">Форум проекта</button>
-      <button class="nav-btn" id="tabAcpBtn" onclick="switchMainView('acp')">Панель владельца (ACP)</button>
+      <button class="nav-btn" id="tabAcpBtn" style="display:none;" onclick="switchMainView('acp')">Панель владельца (ACP)</button>
     </div>
-      <div class="user-box">
+    <div class="user-box">
       <span>Аккаунт: <b id="headerUserDisplay">Гость</b></span>
       <button class="btn btn-sm" id="btnOpenAuth" onclick="document.getElementById('authModal').style.display='flex'">Вход / Регистрация</button>
       <button class="btn btn-ghost btn-sm" id="btnLogout" style="display:none;" onclick="fbLogout()">Выйти</button>
@@ -168,10 +110,7 @@
   <div id="forumView" class="container">
     <div class="grid-forum">
       <aside>
-        <div class="card">
-          <div class="card-title">Категории</div>
-          <div id="categoryList"></div>
-        </div>
+        <div class="card"><div class="card-title">Категории</div><div id="categoryList"></div></div>
         <div class="card">
           <div class="card-title">Статистика проекта</div>
           <div class="stat-row"><span>Онлайн сервера:</span> <b>418 / 500</b></div>
@@ -179,7 +118,6 @@
           <div class="stat-row"><span>Участников:</span> <b id="statUsers">0</b></div>
         </div>
       </aside>
-
       <main>
         <div class="toolbar">
           <div style="display:flex; gap:8px;">
@@ -192,7 +130,6 @@
           </div>
           <button class="btn" onclick="openCreateTopicModal()">+ Создать тему</button>
         </div>
-
         <div id="topicsContainer"></div>
       </main>
     </div>
@@ -206,7 +143,6 @@
       <div class="stat-box"><span>Активные темы</span><h2 id="acpStatTopics">0</h2></div>
       <div class="stat-box"><span>Открытые жалобы</span><h2 id="acpStatReports">0</h2></div>
     </div>
-
     <div class="acp-tabs">
       <button class="nav-btn active" onclick="switchAcpTab('users', this)">Пользователи и Наказания</button>
       <button class="nav-btn" onclick="switchAcpTab('topics', this)">Модерация тем</button>
@@ -214,336 +150,141 @@
       <button class="nav-btn" onclick="switchAcpTab('reports', this)">Жалобы игроков</button>
       <button class="nav-btn" onclick="switchAcpTab('settings', this)">Настройки и Логи</button>
     </div>
-
-    <div id="acp-users" class="card acp-section">
-      <div class="card-title">Управление аккаунтами, префиксами, мутами и банами</div>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>Игрок и Префикс</th>
-              <th>IP-адрес</th>
-              <th>Роль</th>
-              <th>Статус</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody id="acpUsersTable"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="acp-topics" class="card acp-section" style="display:none;">
-      <div class="card-title">Управление всеми темами форума</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Тема</th>
-            <th>Категория</th>
-            <th>Автор</th>
-            <th>Статус</th>
-            <th>Управление</th>
-          </tr>
-        </thead>
-        <tbody id="acpTopicsTable"></tbody>
-      </table>
-    </div>
-
-    <div id="acp-cats" class="card acp-section" style="display:none;">
-      <div class="card-title">Разделы форума Premazing Online</div>
-      <div style="display:flex; gap:10px; margin-bottom:15px;">
-        <input type="text" id="newCatInput" placeholder="Название нового раздела..." style="flex:1;" />
-        <button class="btn" onclick="addCategory()">Добавить раздел</button>
-      </div>
-      <div id="acpCatsList"></div>
-    </div>
-
-    <div id="acp-reports" class="card acp-section" style="display:none;">
-      <div class="card-title">Жалобы от пользователей</div>
-      <div id="acpReportsList"></div>
-    </div>
-
+    <div id="acp-users" class="card acp-section"><div class="card-title">Управление аккаунтами</div><div style="overflow-x:auto;"><table><thead><tr><th>Игрок и Префикс</th><th>IP</th><th>Роль</th><th>Статус</th><th>Действия</th></tr></thead><tbody id="acpUsersTable"></tbody></table></div></div>
+    <div id="acp-topics" class="card acp-section" style="display:none;"><div class="card-title">Управление темами</div><table><thead><tr><th>Тема</th><th>Категория</th><th>Автор</th><th>Статус</th><th>Управление</th></tr></thead><tbody id="acpTopicsTable"></tbody></table></div>
+    <div id="acp-cats" class="card acp-section" style="display:none;"><div class="card-title">Разделы форума</div><div style="display:flex; gap:10px; margin-bottom:15px;"><input type="text" id="newCatInput" placeholder="Название раздела..." style="flex:1;" /><button class="btn" onclick="addCategory()">Добавить</button></div><div id="acpCatsList"></div></div>
+    <div id="acp-reports" class="card acp-section" style="display:none;"><div class="card-title">Жалобы</div><div id="acpReportsList"></div></div>
     <div id="acp-settings" class="card acp-section" style="display:none;">
-      <div class="card-title">Глобальные настройки форума</div>
+      <div class="card-title">Настройки форума</div>
       <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#12141c; border-radius:8px; margin-bottom:15px;">
-        <div>
-          <b>Режим технических работ</b>
-          <div style="font-size:13px; color:var(--text-muted);">Закрывает доступ к форуму для всех, кроме администрации</div>
-        </div>
+        <div><b>Режим технических работ</b><div style="font-size:13px; color:var(--text-muted);">Закрывает доступ для обычных игроков</div></div>
         <button id="toggleMaintBtn" class="btn btn-warning" onclick="toggleMaintenance()">Включить техработы</button>
       </div>
-
       <div style="padding:12px; background:#12141c; border-radius:8px; margin-bottom:20px;">
-        <b>Глобальное объявление в шапке форума</b>
-        <div style="display:flex; gap:10px; margin-top:8px;">
-          <input type="text" id="announceInput" placeholder="Например: Х2 Донат и конкурсы на сервере в эти выходные!" style="flex:1;" />
-          <button class="btn" onclick="saveAnnouncement()">Сохранить</button>
-        </div>
+        <b>Глобальное объявление</b>
+        <div style="display:flex; gap:10px; margin-top:8px;"><input type="text" id="announceInput" placeholder="Текст объявления..." style="flex:1;" /><button class="btn" onclick="saveAnnouncement()">Сохранить</button></div>
       </div>
-
-      <div class="card-title">Журнал действий владельца (Логи)</div>
-      <div id="acpLogsList" style="max-height:250px; overflow-y:auto;"></div>
+      <div class="card-title">Логи действий</div><div id="acpLogsList" style="max-height:250px; overflow-y:auto;"></div>
     </div>
   </div>
 
+  <!-- Модальные окна -->
   <div id="createTopicModal" class="modal-overlay">
     <div class="modal">
-      <div class="modal-header">
-        <h3>Создать новую тему</h3>
-        <button class="close-btn" onclick="closeModal('createTopicModal')">✕</button>
-      </div>
-      <div class="form-group">
-        <label>Категория</label>
-        <select id="topicCatSelect"></select>
-      </div>
-      <div class="form-group">
-        <label>Заголовок темы</label>
-        <input type="text" id="topicTitleInput" placeholder="Введите суть темы..." />
-      </div>
-      <div class="form-group">
-        <label>Текст сообщения</label>
-        <textarea id="topicBodyInput" rows="5" placeholder="Подробно опишите ваше сообщение..."></textarea>
-      </div>
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn btn-ghost" onclick="closeModal('createTopicModal')">Отмена</button>
-        <button class="btn" onclick="createTopic()">Опубликовать</button>
-      </div>
+      <div class="modal-header"><h3>Создать новую тему</h3><button class="close-btn" onclick="closeModal('createTopicModal')">✕</button></div>
+      <div class="form-group"><label>Категория</label><select id="topicCatSelect"></select></div>
+      <div class="form-group"><label>Заголовок темы</label><input type="text" id="topicTitleInput" placeholder="Введите суть темы..." /></div>
+      <div class="form-group"><label>Текст сообщения</label><textarea id="topicBodyInput" rows="5" placeholder="Подробно опишите ваше сообщение..."></textarea></div>
+      <div style="display:flex; justify-content:flex-end; gap:10px;"><button class="btn btn-ghost" onclick="closeModal('createTopicModal')">Отмена</button><button class="btn" onclick="createTopic()">Опубликовать</button></div>
     </div>
   </div>
 
   <div id="viewTopicModal" class="modal-overlay">
     <div class="modal">
-      <div class="modal-header">
-        <div>
-          <h3 id="viewTopicTitle">Тема</h3>
-          <div id="viewTopicMeta" style="font-size:12px; color:var(--text-muted); margin-top:3px;"></div>
-        </div>
-        <button class="close-btn" onclick="closeModal('viewTopicModal')">✕</button>
-      </div>
-
+      <div class="modal-header"><div><h3 id="viewTopicTitle">Тема</h3><div id="viewTopicMeta" style="font-size:12px; color:var(--text-muted); margin-top:3px;"></div></div><button class="close-btn" onclick="closeModal('viewTopicModal')">✕</button></div>
       <div id="topicPostsContainer" style="margin-bottom: 15px;"></div>
-
       <div id="replyBox">
-        <div class="form-group">
-          <label>Ваш ответ в тему</label>
-          <textarea id="replyInput" rows="3" placeholder="Напишите сообщение..."></textarea>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <button class="btn btn-danger btn-sm" onclick="reportCurrentTopic()">Пожаловаться на тему</button>
-          <button class="btn" onclick="submitReply()">Отправить ответ</button>
-        </div>
+        <div class="form-group"><label>Ваш ответ в тему</label><textarea id="replyInput" rows="3" placeholder="Напишите сообщение..."></textarea></div>
+        <div style="display:flex; justify-content:space-between; align-items:center;"><button class="btn btn-danger btn-sm" onclick="reportCurrentTopic()">Пожаловаться на тему</button><button class="btn" onclick="submitReply()">Отправить ответ</button></div>
       </div>
-      <div id="lockedNotice" style="display:none; text-align:center; padding:10px; background:#29181c; color:var(--danger); border-radius:6px; font-weight:600;">
-        🔒 Тема закрыта администрацией. Новые ответы запрещены.
-      </div>
+      <div id="lockedNotice" style="display:none; text-align:center; padding:10px; background:#29181c; color:var(--danger); border-radius:6px; font-weight:600;">🔒 Тема закрыта администрацией. Новые ответы запрещены.</div>
     </div>
   </div>
 
   <div id="banModal" class="modal-overlay">
     <div class="modal" style="max-width:450px;">
-      <div class="modal-header">
-        <h3>Блокировка аккаунта: <span id="banTargetName"></span></h3>
-        <button class="close-btn" onclick="closeModal('banModal')">✕</button>
-      </div>
-      <div class="form-group">
-        <label>Срок блокировки</label>
-        <select id="banDuration">
-          <option value="24 часа">24 часа</option>
-          <option value="7 дней">7 дней</option>
-          <option value="30 дней">30 дней</option>
-          <option value="Навсегда">Навсегда (Перманентный)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Причина блокировки</label>
-        <input type="text" id="banReason" placeholder="Например: Оскорбление администрации / Чит" />
-      </div>
-      <div class="form-group" style="display:flex; align-items:center; gap:8px;">
-        <input type="checkbox" id="banIpCheck" style="width:auto;" />
-        <label style="margin:0;">Заблокировать также по IP-адресу</label>
-      </div>
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn btn-ghost" onclick="closeModal('banModal')">Отмена</button>
-        <button class="btn btn-danger" onclick="confirmBan()">Заблокировать</button>
-      </div>
+      <div class="modal-header"><h3>Блокировка аккаунта: <span id="banTargetName"></span></h3><button class="close-btn" onclick="closeModal('banModal')">✕</button></div>
+      <div class="form-group"><label>Срок блокировки</label><select id="banDuration"><option value="24 часа">24 часа</option><option value="7 дней">7 дней</option><option value="30 дней">30 дней</option><option value="Навсегда">Навсегда (Перманентный)</option></select></div>
+      <div class="form-group"><label>Причина блокировки</label><input type="text" id="banReason" placeholder="Например: Оскорбление администрации" /></div>
+      <div class="form-group" style="display:flex; align-items:center; gap:8px;"><input type="checkbox" id="banIpCheck" style="width:auto;" /><label style="margin:0;">Заблокировать также по IP-адресу</label></div>
+      <div style="display:flex; justify-content:flex-end; gap:10px;"><button class="btn btn-ghost" onclick="closeModal('banModal')">Отмена</button><button class="btn btn-danger" onclick="confirmBan()">Заблокировать</button></div>
     </div>
   </div>
 
   <div id="manageUserModal" class="modal-overlay">
     <div class="modal" style="max-width:450px;">
-      <div class="modal-header">
-        <h3>Настройки игрока: <span id="manageTargetName"></span></h3>
-        <button class="close-btn" onclick="closeModal('manageUserModal')">✕</button>
+      <div class="modal-header"><h3>Настройки игрока: <span id="manageTargetName"></span></h3><button class="close-btn" onclick="closeModal('manageUserModal')">✕</button></div>
+      <div class="form-group"><label>Кастомный префикс</label><input type="text" id="customPrefixInput" placeholder="Например: Спонсор / YouTube" /></div>
+      <div class="form-group"><label>Цвет префикса</label><select id="customPrefixColor"><option value="#6366f1">Фиолетовый</option><option value="#ef4444">Красный</option><option value="#10b981">Зеленый</option><option value="#f59e0b">Золотой</option><option value="#ec4899">Розовый</option></select></div>
+      <div class="form-group"><label>Роль на форуме</label><select id="userRoleSelect"><option value="Игрок">Игрок</option><option value="Модератор">Модератор</option><option value="Администратор">Администратор</option><option value="Владелец">Владелец</option></select></div>
+      <div class="form-group"><label>Мут</label><select id="userMuteSelect"><option value="none">Без мута</option><option value="1 час">Мут на 1 час</option><option value="24 часа">Мут на 24 часа</option><option value="Навсегда">Перманентный мут</option></select></div>
+      <div style="display:flex; justify-content:flex-end; gap:10px;"><button class="btn btn-ghost" onclick="closeModal('manageUserModal')">Отмена</button><button class="btn" onclick="saveUserManage()">Сохранить</button></div>
+    </div>
+  </div>
+
+  <!-- Окно Входа и Регистрации -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal" style="max-width:420px;">
+      <div class="modal-header"><h3 id="authModalTitle">Вход на форум</h3><button class="close-btn" onclick="closeModal('authModal')">✕</button></div>
+      <div style="display:flex; gap:8px; margin-bottom:15px;">
+        <button class="btn btn-ghost" style="flex:1;" onclick="setAuthMode(false)">Вход</button>
+        <button class="btn btn-ghost" style="flex:1;" onclick="setAuthMode(true)">Регистрация</button>
       </div>
-      <div class="form-group">
-        <label>Выдать кастомный префикс (оставьте пустым, чтобы убрать)</label>
-        <input type="text" id="customPrefixInput" placeholder="Например: Спонсор / YouTube / Легенда" />
-      </div>
-      <div class="form-group">
-        <label>Цвет префикса</label>
-        <select id="customPrefixColor">
-          <option value="#6366f1">Фиолетовый</option>
-          <option value="#ef4444">Красный</option>
-          <option value="#10b981">Зеленый</option>
-          <option value="#f59e0b">Золотой</option>
-          <option value="#ec4899">Розовый</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Роль на форуме</label>
-        <select id="userRoleSelect">
-          <option value="Игрок">Игрок</option>
-          <option value="Модератор">Модератор</option>
-          <option value="Администратор">Администратор</option>
-          <option value="Владелец">Владелец</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Выдать Мут (запрет создавать темы и отвечать)</label>
-        <select id="userMuteSelect">
-          <option value="none">Без мута</option>
-          <option value="1 час">Мут на 1 час</option>
-          <option value="24 часа">Мут на 24 часа</option>
-          <option value="Навсегда">Перманентный мут</option>
-        </select>
-      </div>
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn btn-ghost" onclick="closeModal('manageUserModal')">Отмена</button>
-        <button class="btn" onclick="saveUserManage()">Сохранить изменения</button>
-      </div>
+      <div class="form-group" id="regNickGroup" style="display:none;"><label>Игровой никнейм (Имя_Фамилия)</label><input type="text" id="authNickInput" placeholder="Например: Ivan_Ivanov" /></div>
+      <div class="form-group"><label>Электронная почта (Email)</label><input type="email" id="authEmailInput" placeholder="player@premazing.ru" /></div>
+      <div class="form-group"><label>Пароль (минимум 6 символов)</label><input type="password" id="authPassInput" placeholder="••••••••" /></div>
+      <div id="authErrorMsg" style="color:var(--danger); font-size:13px; margin-bottom:12px;"></div>
+      <button class="btn" style="width:100%;" id="authSubmitBtn" onclick="submitFirebaseAuth()">Войти на форум</button>
     </div>
   </div>
 
   <script>
-    const state = {
+    var state = {
       maintenance: false,
       announcement: "Добро пожаловать на официальный форум проекта Premazing Online!",
       selectedCategory: "Все разделы",
-      activeUserId: 1,
+      activeUserId: "guest",
       currentTopicId: null,
       targetUserId: null,
-      categories: [
-        "Новости и обновления",
-        "Жалобы на игроков",
-        "Заявки на пост лидера",
-        "Технический раздел",
-        "Общение игроков"
-      ],
+      categories: ["Новости и обновления", "Жалобы на игроков", "Заявки на пост лидера", "Технический раздел", "Общение игроков"],
       users: [
-        { id: 1, name: "Marsel_Wonka", ip: "185.44.12.1", role: "Владелец", prefix: "ВЛАДЕЛЕЦ", prefixColor: "#ef4444", banned: null, mute: "none" },
-        { id: 2, name: "Alex_Mercer", ip: "92.114.88.14", role: "Модератор", prefix: "Следящий", prefixColor: "#10b981", banned: null, mute: "none" },
-        { id: 3, name: "Maksim_Volkov", ip: "178.210.45.9", role: "Игрок", prefix: "VIP", prefixColor: "#f59e0b", banned: null, mute: "none" },
-        { id: 4, name: "Dima_Ghetto", ip: "46.18.201.77", role: "Игрок", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" }
+        { id: "1", name: "Owner_Premazing", ip: "185.44.12.1", role: "Владелец", prefix: "ВЛАДЕЛЕЦ", prefixColor: "#ef4444", banned: null, mute: "none" }
       ],
       topics: [
-        {
-          id: 101,
-          title: "Открытие сервера Premazing Online и правила форума",
-          category: "Новости и обновления",
-          authorId: 1,
-          pinned: true,
-          locked: false,
-          date: "Сегодня, 14:00",
-          posts: [
-            { authorId: 1, text: "Приветствуем всех игроков на форуме Premazing Online! Соблюдайте правила, не оффтопьте и уважайте друг друга.", date: "Сегодня, 14:00" },
-            { authorId: 3, text: "Ура, форум заработал! Жду открытия заявок на лидерку.", date: "Сегодня, 14:12" }
-          ]
-        },
-        {
-          id: 102,
-          title: "Заявки на пост лидера фракции LSPD",
-          category: "Заявки на пост лидера",
-          authorId: 2,
-          pinned: false,
-          locked: false,
-          date: "Сегодня, 15:30",
-          posts: [
-            { authorId: 2, text: "Оставляйте свои заявки по форме: Ник, уровень, опыт руководства.", date: "Сегодня, 15:30" }
-          ]
-        }
+        { id: 101, title: "Открытие сервера Premazing Online и правила форума", category: "Новости и обновления", authorId: "1", pinned: true, locked: false, date: "Сегодня, 14:00", posts: [{ authorId: "1", text: "Приветствуем всех игроков на форуме Premazing Online!", date: "Сегодня, 14:00" }] }
       ],
       reports: [],
-      logs: [
-        "[Система] Форум Premazing Online успешно запущен."
-      ]
+      logs: ["[Система] Форум Premazing Online успешно запущен."]
     };
 
     function getUser(id) {
-      return state.users.find(u => u.id === id) || state.users[0];
+      return state.users.find(function(u) { return u.id === id; }) || { id: "guest", name: "Гость", role: "Гость", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
     }
 
     function formatUserBadge(user) {
-      const prefixHtml = user.prefix
-        ? `<span class="user-prefix" style="background:${user.prefixColor}33; color:${user.prefixColor}; border:1px solid ${user.prefixColor}66;">${user.prefix}</span>`
-        : "";
-      return `${prefixHtml}<b>${user.name}</b> <span style="font-size:11px; color:var(--text-muted);">(${user.role})</span>`;
+      var prefixHtml = user.prefix ? '<span class="user-prefix" style="background:' + user.prefixColor + '33; color:' + user.prefixColor + '; border:1px solid ' + user.prefixColor + '66;">' + user.prefix + '</span>' : "";
+      return prefixHtml + '<b>' + user.name + '</b> <span style="font-size:11px; color:var(--text-muted);">(' + user.role + ')</span>';
     }
 
     function addLog(text) {
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      state.logs.unshift(`[${time}] ${text}`);
+      var time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      state.logs.unshift('[' + time + '] ' + text);
       renderLogs();
     }
 
-    function init() {
-      renderCategories();
-      renderTopics();
-      updateStats();
-      updateBanners();
-    }
-
-    function renderUserSelector() {}
-
-
-    function changeActiveUser() {
-      state.activeUserId = Number(document.getElementById("currentUserSelect").value);
-      const user = getUser(state.activeUserId);
-
-      const acpBtn = document.getElementById("tabAcpBtn");
-      if (user.role === "Владелец" || user.role === "Администратор") {
-        acpBtn.style.display = "inline-block";
-      } else {
-        acpBtn.style.display = "none";
-        switchMainView('forum');
-      }
-      updateBanners();
-    }
-
     function updateBanners() {
-      const user = getUser(state.activeUserId);
-      const isStaff = user.role === "Владелец" || user.role === "Администратор" || user.role === "Модератор";
-
-      const maintBanner = document.getElementById("maintBanner");
-      const maintScreen = document.getElementById("maintScreen");
-      const forumView = document.getElementById("forumView");
-      const acpView = document.getElementById("acpView");
+      var user = getUser(state.activeUserId);
+      var isStaff = user.role === "Владелец" || user.role === "Администратор" || user.role === "Модератор";
+      var maintBanner = document.getElementById("maintBanner");
+      var maintScreen = document.getElementById("maintScreen");
+      var forumView = document.getElementById("forumView");
+      var acpView = document.getElementById("acpView");
 
       if (state.maintenance) {
         if (isStaff) {
-          maintBanner.style.display = "block";
-          maintScreen.style.display = "none";
+          maintBanner.style.display = "block"; maintScreen.style.display = "none";
           forumView.style.display = document.getElementById("tabForumBtn").classList.contains("active") ? "block" : "none";
         } else {
-          maintBanner.style.display = "none";
-          forumView.style.display = "none";
-          acpView.style.display = "none";
-          maintScreen.style.display = "block";
+          maintBanner.style.display = "none"; forumView.style.display = "none"; acpView.style.display = "none"; maintScreen.style.display = "block";
         }
       } else {
-        maintBanner.style.display = "none";
-        maintScreen.style.display = "none";
-        if (document.getElementById("tabForumBtn").classList.contains("active")) {
-          forumView.style.display = "block";
-        }
+        maintBanner.style.display = "none"; maintScreen.style.display = "none";
+        if (document.getElementById("tabForumBtn").classList.contains("active")) forumView.style.display = "block";
       }
 
-      const ann = document.getElementById("announceBanner");
-      if (state.announcement.trim()) {
-        ann.style.display = "block";
-        ann.textContent = "📢 " + state.announcement;
-      } else {
-        ann.style.display = "none";
-      }
+      var ann = document.getElementById("announceBanner");
+      if (state.announcement.trim()) { ann.style.display = "block"; ann.textContent = "📢 " + state.announcement; }
+      else { ann.style.display = "none"; }
     }
 
     function switchMainView(view) {
@@ -556,426 +297,174 @@
     }
 
     function renderCategories() {
-      const list = document.getElementById("categoryList");
-      const allCats = ["Все разделы", ...state.categories];
-      list.innerHTML = allCats.map(cat => {
-        const count = cat === "Все разделы"
-          ? state.topics.length
-          : state.topics.filter(t => t.category === cat).length;
-        return `<div class="cat-item ${state.selectedCategory === cat ? 'active' : ''}" onclick="selectCategory('${cat}')">
-          <span>${cat}</span><span>${count}</span>
-        </div>`;
+      var list = document.getElementById("categoryList");
+      var allCats = ["Все разделы"].concat(state.categories);
+      list.innerHTML = allCats.map(function(cat) {
+        var count = cat === "Все разделы" ? state.topics.length : state.topics.filter(function(t) { return t.category === cat; }).length;
+        return '<div class="cat-item ' + (state.selectedCategory === cat ? 'active' : '') + '" onclick="selectCategory(\'' + cat + '\')"><span>' + cat + '</span><span>' + count + '</span></div>';
       }).join("");
     }
 
-    function selectCategory(cat) {
-      state.selectedCategory = cat;
-      renderCategories();
-      renderTopics();
-    }
+    function selectCategory(cat) { state.selectedCategory = cat; renderCategories(); renderTopics(); }
 
     function renderTopics() {
-      const container = document.getElementById("topicsContainer");
-      const search = document.getElementById("searchInput").value.toLowerCase();
-      const sort = document.getElementById("sortSelect").value;
-
-      let filtered = state.topics.filter(t => {
-        const matchCat = state.selectedCategory === "Все разделы" || t.category === state.selectedCategory;
-        const matchSearch = t.title.toLowerCase().includes(search);
-        return matchCat && matchSearch;
+      var container = document.getElementById("topicsContainer");
+      var search = document.getElementById("searchInput").value.toLowerCase();
+      var sort = document.getElementById("sortSelect").value;
+      var filtered = state.topics.filter(function(t) {
+        return (state.selectedCategory === "Все разделы" || t.category === state.selectedCategory) && t.title.toLowerCase().includes(search);
       });
+      if (sort === "pinned") filtered.sort(function(a, b) { return (b.pinned - a.pinned) || (b.id - a.id); });
+      else if (sort === "newest") filtered.sort(function(a, b) { return b.id - a.id; });
+      else if (sort === "replies") filtered.sort(function(a, b) { return b.posts.length - a.posts.length; });
 
-      if (sort === "pinned") {
-        filtered.sort((a, b) => (b.pinned - a.pinned) || (b.id - a.id));
-      } else if (sort === "newest") {
-        filtered.sort((a, b) => b.id - a.id);
-      } else if (sort === "replies") {
-        filtered.sort((a, b) => b.posts.length - a.posts.length);
-      }
+      if (!filtered.length) { container.innerHTML = '<div class="card" style="text-align:center; color:var(--text-muted);">Тем в этом разделе пока нет.</div>'; return; }
 
-      if (!filtered.length) {
-        container.innerHTML = `<div class="card" style="text-align:center; color:var(--text-muted);">Тем в этом разделе пока нет.</div>`;
-        return;
-      }
-
-      container.innerHTML = filtered.map(t => {
-        const author = getUser(t.authorId);
-        return `
-          <div class="topic-row ${t.pinned ? 'pinned' : ''}" onclick="openTopic(${t.id})">
-            <div>
-              <div class="topic-title">
-                ${t.pinned ? '<span class="badge badge-pin">Закреплено</span>' : ''}
-                ${t.locked ? '<span class="badge badge-lock">Закрыто</span>' : ''}
-                <span class="badge badge-cat">${t.category}</span>
-                <span>${t.title}</span>
-              </div>
-              <div class="topic-meta">Автор: ${formatUserBadge(author)} • Создано: ${t.date}</div>
-            </div>
-            <div style="text-align:right; font-size:13px; color:var(--text-muted);">
-              <b style="color:#fff; font-size:16px;">${t.posts.length - 1}</b><br>ответов
-            </div>
-          </div>
-        `;
+      container.innerHTML = filtered.map(function(t) {
+        var author = getUser(t.authorId);
+        return '<div class="topic-row ' + (t.pinned ? 'pinned' : '') + '" onclick="openTopic(' + t.id + ')"><div><div class="topic-title">' +
+          (t.pinned ? '<span class="badge badge-pin">Закреплено</span>' : '') + (t.locked ? '<span class="badge badge-lock">Закрыто</span>' : '') +
+          '<span class="badge badge-cat">' + t.category + '</span><span>' + t.title + '</span></div><div class="topic-meta">Автор: ' + formatUserBadge(author) + ' • Создано: ' + t.date + '</div></div>' +
+          '<div style="text-align:right; font-size:13px; color:var(--text-muted);"><b style="color:#fff; font-size:16px;">' + (t.posts.length - 1) + '</b><br>ответов</div></div>';
       }).join("");
     }
 
     function canUserPost() {
-      const user = getUser(state.activeUserId);
-      if (user.banned) {
-        alert(`Ваш аккаунт заблокирован! Причина: ${user.banned.reason} (${user.banned.duration})`);
+      if (!window.fbAuth || !window.fbAuth.currentUser) {
+        alert("Для создания тем и ответов необходимо войти или зарегистрироваться!");
+        document.getElementById("authModal").style.display = "flex";
         return false;
       }
-      if (user.mute !== "none") {
-        alert(`Вам выдан мут (${user.mute}). Вы не можете создавать темы и отвечать.`);
-        return false;
-      }
+      var user = getUser(state.activeUserId);
+      if (user.banned) { alert("Ваш аккаунт заблокирован! Причина: " + user.banned.reason); return false; }
+      if (user.mute !== "none") { alert("Вам выдан мут (" + user.mute + ")."); return false; }
       return true;
     }
 
     function openCreateTopicModal() {
       if (!canUserPost()) return;
-      const sel = document.getElementById("topicCatSelect");
-      sel.innerHTML = state.categories.map(c => `<option value="${c}">${c}</option>`).join("");
-      document.getElementById("topicTitleInput").value = "";
-      document.getElementById("topicBodyInput").value = "";
+      document.getElementById("topicCatSelect").innerHTML = state.categories.map(function(c) { return '<option value="' + c + '">' + c + '</option>'; }).join("");
+      document.getElementById("topicTitleInput").value = ""; document.getElementById("topicBodyInput").value = "";
       document.getElementById("createTopicModal").style.display = "flex";
     }
 
     function createTopic() {
-      const category = document.getElementById("topicCatSelect").value;
-      const title = document.getElementById("topicTitleInput").value.trim();
-      const body = document.getElementById("topicBodyInput").value.trim();
-      if (!title || !body) return alert("Заполните заголовок и текст темы!");
-
-      state.topics.unshift({
-        id: Date.now(),
-        title,
-        category,
-        authorId: state.activeUserId,
-        pinned: false,
-        locked: false,
-        date: "Только что",
-        posts: [{ authorId: state.activeUserId, text: body, date: "Только что" }]
-      });
-
-      closeModal("createTopicModal");
-      renderCategories();
-      renderTopics();
-      updateStats();
+      var category = document.getElementById("topicCatSelect").value;
+      var title = document.getElementById("topicTitleInput").value.trim();
+      var body = document.getElementById("topicBodyInput").value.trim();
+      if (!title || !body) return alert("Заполните заголовок и текст!");
+      state.topics.unshift({ id: Date.now(), title: title, category: category, authorId: state.activeUserId, pinned: false, locked: false, date: "Только что", posts: [{ authorId: state.activeUserId, text: body, date: "Только что" }] });
+      closeModal("createTopicModal"); renderCategories(); renderTopics(); updateStats();
     }
 
     function openTopic(id) {
-      const topic = state.topics.find(t => t.id === id);
+      var topic = state.topics.find(function(t) { return t.id === id; });
       if (!topic) return;
       state.currentTopicId = id;
-
-      const author = getUser(topic.authorId);
       document.getElementById("viewTopicTitle").textContent = topic.title;
-      document.getElementById("viewTopicMeta").innerHTML = `Раздел: <b>${topic.category}</b> • Автор: ${formatUserBadge(author)}`;
-
-      const postsHtml = topic.posts.map((p, idx) => {
-        const pUser = getUser(p.authorId);
-        return `
-          <div class="post-item">
-            <div class="post-header">
-              <div>${formatUserBadge(pUser)}</div>
-              <div style="color:var(--text-muted);">${p.date} #${idx + 1}</div>
-            </div>
-            <div class="post-body">${p.text}</div>
-          </div>
-        `;
+      document.getElementById("viewTopicMeta").innerHTML = 'Раздел: <b>' + topic.category + '</b> • Автор: ' + formatUserBadge(getUser(topic.authorId));
+      document.getElementById("topicPostsContainer").innerHTML = topic.posts.map(function(p, idx) {
+        return '<div class="post-item"><div class="post-header"><div>' + formatUserBadge(getUser(p.authorId)) + '</div><div style="color:var(--text-muted);">' + p.date + ' #' + (idx + 1) + '</div></div><div class="post-body">' + p.text + '</div></div>';
       }).join("");
-
-      document.getElementById("topicPostsContainer").innerHTML = postsHtml;
       document.getElementById("replyInput").value = "";
-
-      const user = getUser(state.activeUserId);
-      const isStaff = user.role === "Владелец" || user.role === "Администратор";
-
-      if (topic.locked && !isStaff) {
-        document.getElementById("replyBox").style.display = "none";
-        document.getElementById("lockedNotice").style.display = "block";
-      } else {
-        document.getElementById("replyBox").style.display = "block";
-        document.getElementById("lockedNotice").style.display = topic.locked ? "block" : "none";
-      }
-
+      var user = getUser(state.activeUserId);
+      var isStaff = user.role === "Владелец" || user.role === "Администратор";
+      document.getElementById("replyBox").style.display = (topic.locked && !isStaff) ? "none" : "block";
+      document.getElementById("lockedNotice").style.display = topic.locked ? "block" : "none";
       document.getElementById("viewTopicModal").style.display = "flex";
     }
 
     function submitReply() {
       if (!canUserPost()) return;
-      const text = document.getElementById("replyInput").value.trim();
+      var text = document.getElementById("replyInput").value.trim();
       if (!text) return alert("Введите текст ответа!");
-
-      const topic = state.topics.find(t => t.id === state.currentTopicId);
-      topic.posts.push({
-        authorId: state.activeUserId,
-        text,
-        date: "Только что"
-      });
-
-      openTopic(topic.id);
-      renderTopics();
+      var topic = state.topics.find(function(t) { return t.id === state.currentTopicId; });
+      topic.posts.push({ authorId: state.activeUserId, text: text, date: "Только что" });
+      openTopic(topic.id); renderTopics();
     }
 
     function reportCurrentTopic() {
-      const topic = state.topics.find(t => t.id === state.currentTopicId);
-      const user = getUser(state.activeUserId);
-      state.reports.push({
-        id: Date.now(),
-        topicTitle: topic.title,
-        reporter: user.name
-      });
-      updateStats();
-      alert("Жалоба отправлена администрации!");
+      var topic = state.topics.find(function(t) { return t.id === state.currentTopicId; });
+      state.reports.push({ id: Date.now(), topicTitle: topic.title, reporter: getUser(state.activeUserId).name });
+      updateStats(); alert("Жалоба отправлена!");
     }
 
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
-    }
+    function closeModal(id) { document.getElementById(id).style.display = "none"; }
 
     function switchAcpTab(tab, btn) {
-      document.querySelectorAll(".acp-section").forEach(el => el.style.display = "none");
+      document.querySelectorAll(".acp-section").forEach(function(el) { el.style.display = "none"; });
       document.getElementById("acp-" + tab).style.display = "block";
-      document.querySelectorAll(".acp-tabs .nav-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      renderAcpAll();
-    }
-
-    function renderAcpAll() {
-      updateStats();
-      renderAcpUsers();
-      renderAcpTopics();
-      renderAcpCats();
-      renderAcpReports();
-      renderLogs();
-    }
-
-    function updateStats() {
-      document.getElementById("statTopics").textContent = state.topics.length;
-      document.getElementById("statUsers").textContent = state.users.length;
-      document.getElementById("acpStatUsers").textContent = state.users.length;
-      document.getElementById("acpStatBanned").textContent = state.users.filter(u => u.banned).length;
-      document.getElementById("acpStatMuted").textContent = state.users.filter(u => u.mute !== "none").length;
-      document.getElementById("acpStatTopics").textContent = state.topics.length;
-      document.getElementById("acpStatReports").textContent = state.reports.length;
-    }
-
-    function renderAcpUsers() {
-      const tbody = document.getElementById("acpUsersTable");
-      tbody.innerHTML = state.users.map(u => {
-        let statusHtml = `<span style="color:var(--success);">Активен</span>`;
-        if (u.banned) statusHtml = `<span style="color:var(--danger);">Бан (${u.banned.duration})</span>`;
-        else if (u.mute !== "none") statusHtml = `<span style="color:var(--warning);">Мут (${u.mute})</span>`;
-
-        const banBtn = u.banned
-          ? `<button class="btn btn-success btn-sm" onclick="unbanUser(${u.id})">Разбанить</button>`
-          : `<button class="btn btn-danger btn-sm" onclick="openBanModal(${u.id})">Бан</button>`;
-
-        return `
-          <tr>
-            <td>${formatUserBadge(u)}</td>
-            <td style="font-family:monospace;">${u.ip}</td>
-            <td>${u.role}</td>
-            <td>${statusHtml}</td>
-            <td class="actions-cell">
-              <button class="btn btn-sm" onclick="openManageUserModal(${u.id})">Префикс / Мут / Роль</button>
-              ${u.role !== 'Владелец' ? banBtn : ''}
-            </td>
-          </tr>
-        `;
+      document.querySelectorAll(".acp-tabs .nav-btn").forEach(function(b) { b.classList.remove("active"); });
+    btn.classList.add("active"); renderAcpAll();
+	>
+ function renderAcpUsers() {
+      document.getElementById("acpUsersTable").innerHTML = state.users.map(function(u) {
+        var statusHtml = u.banned ? '<span style="color:var(--danger);">Бан (' + u.banned.duration + ')</span>' : (u.mute !== "none" ? '<span style="color:var(--warning);">Мут (' + u.mute + ')</span>' : '<span style="color:var(--success);">Активен</span>');
+        var banBtn = u.banned ? '<button class="btn btn-success btn-sm" onclick="unbanUser(\'' + u.id + '\')">Разбанить</button>' : '<button class="btn btn-danger btn-sm" onclick="openBanModal(\'' + u.id + '\')">Бан</button>';
+        return '<tr><td>' + formatUserBadge(u) + '</td><td style="font-family:monospace;">' + u.ip + '</td><td>' + u.role + '</td><td>' + statusHtml + '</td><td class="actions-cell"><button class="btn btn-sm" onclick="openManageUserModal(\'' + u.id + '\')">Префикс / Мут / Роль</button>' + (u.role !== 'Владелец' ? banBtn : '') + '</td></tr>';
       }).join("");
     }
 
-    function openBanModal(userId) {
-      state.targetUserId = userId;
-      const u = getUser(userId);
-      document.getElementById("banTargetName").textContent = u.name;
-      document.getElementById("banReason").value = "";
-      document.getElementById("banIpCheck").checked = false;
-      document.getElementById("banModal").style.display = "flex";
+    function openBanModal(userId) { state.targetUserId = userId; document.getElementById("banTargetName").textContent = getUser(userId).name; document.getElementById("banModal").style.display = "flex"; }
+    async function confirmBan() {
+      var u = getUser(state.targetUserId);
+      u.banned = { duration: document.getElementById("banDuration").value, reason: document.getElementById("banReason").value.trim() || "Нарушение правил", ipBan: document.getElementById("banIpCheck").checked };
+      if (window.fbDb && u.uid) await window.fbDb.collection("users").doc(u.uid).update({ banned: u.banned });
+      addLog("Заблокирован " + u.name); closeModal("banModal"); renderAcpAll();
     }
-
-    function confirmBan() {
-      const u = getUser(state.targetUserId);
-      const duration = document.getElementById("banDuration").value;
-      const reason = document.getElementById("banReason").value.trim() || "Нарушение правил";
-      const ipBan = document.getElementById("banIpCheck").checked;
-
-      u.banned = { duration, reason, ipBan };
-      addLog(`Владелец заблокировал ${u.name} на ${duration}. Причина: ${reason}${ipBan ? ' (+бан по IP)' : ''}`);
-      closeModal("banModal");
-      renderAcpAll();
-    }
-
-    function unbanUser(userId) {
-      const u = getUser(userId);
-      u.banned = null;
-      addLog(`Владелец разблокировал аккаунт ${u.name}.`);
-      renderAcpAll();
+    async function unbanUser(userId) {
+      var u = getUser(userId); u.banned = null;
+      if (window.fbDb && u.uid) await window.fbDb.collection("users").doc(u.uid).update({ banned: null });
+      addLog("Разблокирован " + u.name); renderAcpAll();
     }
 
     function openManageUserModal(userId) {
-      state.targetUserId = userId;
-      const u = getUser(userId);
+      state.targetUserId = userId; var u = getUser(userId);
       document.getElementById("manageTargetName").textContent = u.name;
-      document.getElementById("customPrefixInput").value = u.prefix;
-      document.getElementById("customPrefixColor").value = u.prefixColor;
-      document.getElementById("userRoleSelect").value = u.role;
-      document.getElementById("userMuteSelect").value = u.mute;
+      document.getElementById("customPrefixInput").value = u.prefix; document.getElementById("customPrefixColor").value = u.prefixColor;
+      document.getElementById("userRoleSelect").value = u.role; document.getElementById("userMuteSelect").value = u.mute;
       document.getElementById("manageUserModal").style.display = "flex";
     }
-
-    function saveUserManage() {
-      const u = getUser(state.targetUserId);
-      u.prefix = document.getElementById("customPrefixInput").value.trim();
-      u.prefixColor = document.getElementById("customPrefixColor").value;
-      u.role = document.getElementById("userRoleSelect").value;
-      u.mute = document.getElementById("userMuteSelect").value;
-
-      addLog(`Обновлены права ${u.name}: Роль=${u.role}, Префикс="${u.prefix || 'нет'}", Мут=${u.mute}`);
-      closeModal("manageUserModal");
-      renderUserSelector();
-      renderTopics();
-      renderAcpAll();
+    async function saveUserManage() {
+      var u = getUser(state.targetUserId);
+      u.prefix = document.getElementById("customPrefixInput").value.trim(); u.prefixColor = document.getElementById("customPrefixColor").value;
+      u.role = document.getElementById("userRoleSelect").value; u.mute = document.getElementById("userMuteSelect").value;
+      if (window.fbDb && u.uid) await window.fbDb.collection("users").doc(u.uid).update({ prefix: u.prefix, prefixColor: u.prefixColor, role: u.role, mute: u.mute });
+      addLog("Обновлены права " + u.name); closeModal("manageUserModal"); renderTopics(); renderAcpAll();
     }
 
     function renderAcpTopics() {
-      const tbody = document.getElementById("acpTopicsTable");
-      tbody.innerHTML = state.topics.map(t => {
-        const author = getUser(t.authorId);
-        return `
-          <tr>
-            <td><b>${t.title}</b></td>
-            <td>${t.category}</td>
-            <td>${author.name}</td>
-            <td>${t.pinned ? '📌 Закреп ' : ''}${t.locked ? '🔒 Закрыта' : '🟢 Открыта'}</td>
-            <td class="actions-cell">
-              <button class="btn btn-warning btn-sm" onclick="togglePin(${t.id})">${t.pinned ? 'Открепить' : 'Закрепить'}</button>
-              <button class="btn btn-ghost btn-sm" onclick="toggleLock(${t.id})">${t.locked ? 'Открыть' : 'Закрыть'}</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteTopic(${t.id})">Удалить</button>
-            </td>
-          </tr>
-        `;
+      document.getElementById("acpTopicsTable").innerHTML = state.topics.map(function(t) {
+        return '<tr><td><b>' + t.title + '</b></td><td>' + t.category + '</td><td>' + getUser(t.authorId).name + '</td><td>' + (t.pinned ? '📌 ' : '') + (t.locked ? '🔒' : '🟢') + '</td><td class="actions-cell"><button class="btn btn-warning btn-sm" onclick="togglePin(' + t.id + ')">Закреп</button><button class="btn btn-ghost btn-sm" onclick="toggleLock(' + t.id + ')">Закрыть</button><button class="btn btn-danger btn-sm" onclick="deleteTopic(' + t.id + ')">Удалить</button></td></tr>';
       }).join("");
     }
-
-    function togglePin(id) {
-      const t = state.topics.find(x => x.id === id);
-      t.pinned = !t.pinned;
-      addLog(`${t.pinned ? 'Закреплена' : 'Откреплена'} тема "${t.title}"`);
-      renderTopics();
-      renderAcpTopics();
-    }
-
-    function toggleLock(id) {
-      const t = state.topics.find(x => x.id === id);
-      t.locked = !t.locked;
-      addLog(`${t.locked ? 'Закрыта' : 'Открыта'} тема "${t.title}"`);
-      renderTopics();
-      renderAcpTopics();
-    }
-
-    function deleteTopic(id) {
-      const t = state.topics.find(x => x.id === id);
-      state.topics = state.topics.filter(x => x.id !== id);
-      addLog(`Удалена тема "${t.title}"`);
-      renderCategories();
-      renderTopics();
-      renderAcpAll();
-    }
+    function togglePin(id) { var t = state.topics.find(function(x) { return x.id === id; }); t.pinned = !t.pinned; renderTopics(); renderAcpTopics(); }
+    function toggleLock(id) { var t = state.topics.find(function(x) { return x.id === id; }); t.locked = !t.locked; renderTopics(); renderAcpTopics(); }
+    function deleteTopic(id) { state.topics = state.topics.filter(function(x) { return x.id !== id; }); renderCategories(); renderTopics(); renderAcpAll(); }
 
     function renderAcpCats() {
-      const list = document.getElementById("acpCatsList");
-      list.innerHTML = state.categories.map((c, idx) => `
-        <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid var(--border);">
-          <span>${c}</span>
-          <button class="btn btn-danger btn-sm" onclick="deleteCategory(${idx})">Удалить</button>
-        </div>
-      `).join("");
+      document.getElementById("acpCatsList").innerHTML = state.categories.map(function(c, idx) {
+        return '<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid var(--border);"><span>' + c + '</span><button class="btn btn-danger btn-sm" onclick="deleteCategory(' + idx + ')">Удалить</button></div>';
+      }).join("");
     }
-
-    function addCategory() {
-      const val = document.getElementById("newCatInput").value.trim();
-      if (!val) return;
-      state.categories.push(val);
-      document.getElementById("newCatInput").value = "";
-      addLog(`Создана новая категория форума: "${val}"`);
-      renderCategories();
-      renderAcpCats();
-    }
-
-    function deleteCategory(idx) {
-      const removed = state.categories.splice(idx, 1);
-      addLog(`Удалена категория форума: "${removed[0]}"`);
-      renderCategories();
-      renderAcpCats();
-    }
+    function addCategory() { var v = document.getElementById("newCatInput").value.trim(); if (v) { state.categories.push(v); document.getElementById("newCatInput").value = ""; renderCategories(); renderAcpCats(); } }
+    function deleteCategory(idx) { state.categories.splice(idx, 1); renderCategories(); renderAcpCats(); }
 
     function renderAcpReports() {
-      const list = document.getElementById("acpReportsList");
-      if (!state.reports.length) {
-        list.innerHTML = `<div style="color:var(--text-muted);">Активных жалоб нет.</div>`;
-        return;
-      }
-      list.innerHTML = state.reports.map((r, idx) => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);">
-          <div>Жалоба на тему <b>"${r.topicTitle}"</b> от игрока <b>${r.reporter}</b></div>
-          <button class="btn btn-success btn-sm" onclick="resolveReport(${idx})">Закрыть жалобу</button>
-        </div>
-      `).join("");
+      var list = document.getElementById("acpReportsList");
+      list.innerHTML = state.reports.length ? state.reports.map(function(r, idx) {
+        return '<div style="display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid var(--border);"><div>Жалоба на <b>"' + r.topicTitle + '"</b> от <b>' + r.reporter + '</b></div><button class="btn btn-success btn-sm" onclick="resolveReport(' + idx + ')">Закрыть</button></div>';
+      }).join("") : '<div style="color:var(--text-muted);">Активных жалоб нет.</div>';
     }
+    function resolveReport(idx) { state.reports.splice(idx, 1); renderAcpAll(); }
+    function toggleMaintenance() { state.maintenance = !state.maintenance; updateBanners(); }
+    function saveAnnouncement() { state.announcement = document.getElementById("announceInput").value; updateBanners(); }
+    function renderLogs() { document.getElementById("acpLogsList").innerHTML = state.logs.map(function(l) { return '<div class="log-item">' + l + '</div>'; }).join(""); }
 
-    function resolveReport(idx) {
-      state.reports.splice(idx, 1);
-      addLog("Рассмотрена и закрыта жалоба пользователя.");
-      renderAcpAll();
-    }
+    renderCategories(); renderTopics(); updateStats(); updateBanners();
 
-    function toggleMaintenance() {
-      state.maintenance = !state.maintenance;
-      const btn = document.getElementById("toggleMaintBtn");
-      btn.textContent = state.maintenance ? "Выключить техработы" : "Включить техработы";
-      btn.className = state.maintenance ? "btn btn-success" : "btn btn-warning";
-      addLog(`Режим технических работ ${state.maintenance ? 'ВКЛЮЧЕН' : 'ВЫКЛЮЧЕН'}.`);
-      updateBanners();
-    }
-
-    function saveAnnouncement() {
-      state.announcement = document.getElementById("announceInput").value;
-      addLog("Обновлено глобальное объявление в шапке форума.");
-      updateBanners();
-    }
-
-    function renderLogs() {
-      document.getElementById("acpLogsList").innerHTML = state.logs
-        .map(l => `<div class="log-item">${l}</div>`).join("");
-    }
-
-        init();
-  </script>
-
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-  <script src="https://gstatic.com"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBu2cYEYQm-btowlBTx-b7fT5akhIMFKzU",
-      authDomain: "://firebaseapp.com",
-      projectId: "premazingonline",
-      storageBucket: "premazingonline.firebasestorage.app",
-      messagingSenderId: "4268724908",
-      appId: "1:4268724908:web:cd4b6a9e081e3254e60509",
-      measurementId: "G-3N7S8WN3JW"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    /* Загрузка Firebase без обрезания URL */
     var isRegisterMode = false;
-
     function setAuthMode(reg) {
       isRegisterMode = reg;
       document.getElementById("regNickGroup").style.display = reg ? "block" : "none";
@@ -984,154 +473,72 @@
       document.getElementById("authErrorMsg").textContent = "";
     }
 
-    async function submitFirebaseAuth() {
-      const email = document.getElementById("authEmailInput").value.trim();
-      const pass = document.getElementById("authPassInput").value.trim();
-      const nick = document.getElementById("authNickInput").value.trim();
-      const errEl = document.getElementById("authErrorMsg");
-      errEl.textContent = "";
-
-      if (!email || !pass) {
-        errEl.textContent = "Заполните почту и пароль!";
-        return;
-      }
-
-      try {
-        if (isRegisterMode) {
-          if (!nick) {
-            errEl.textContent = "Укажите игровой никнейм!";
-            return;
-          }
-          const cred = await auth.createUserWithEmailAndPassword(email, pass);
-          await db.collection("users").doc(cred.user.uid).set({
-            uid: cred.user.uid,
-            name: nick,
-            email: email,
-            ip: "Cloud",
-            role: "Игрок",
-            prefix: "",
-            prefixColor: "#6366f1",
-            banned: null,
-            mute: "none"
-          });
-          addLog("Новый игрок зарегистрировался на форуме: " + nick);
-        } else {
-          await auth.signInWithEmailAndPassword(email, pass);
-        }
-        closeModal("authModal");
-      } catch (e) {
-        errEl.textContent = "Ошибка: " + e.message;
-      }
-    }
-
-    function fbLogout() {
-      auth.signOut();
-    }
-
-    async function syncUsersFromFirestore() {
-      const snap = await db.collection("users").get();
-      const cloudUsers = [];
-      snap.forEach((docSnap) => {
-        const d = docSnap.data();
-        cloudUsers.push({
-          id: d.uid,
-          uid: d.uid,
-          name: d.name || d.email,
-          ip: d.ip || "Cloud",
-          role: d.role || "Игрок",
-          prefix: d.prefix || "",
-          prefixColor: d.prefixColor || "#6366f1",
-          banned: d.banned || null,
-          mute: d.mute || "none"
-        });
+    function loadScript(url) {
+      return new Promise(function(resolve, reject) {
+        var s = document.createElement("script");
+        s.src = url;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
       });
-      if (cloudUsers.length > 0) {
-        state.users = cloudUsers;
-        updateStats();
-        if (document.getElementById("acpView").style.display === "block") renderAcpAll();
-      }
     }
 
-    const origSaveUserManage = window.saveUserManage;
-    window.saveUserManage = async function() {
-      origSaveUserManage();
-      const u = getUser(state.targetUserId);
-      if (u && u.uid) {
-        await db.collection("users").doc(u.uid).update({
-          prefix: u.prefix,
-          prefixColor: u.prefixColor,
-          role: u.role,
-          mute: u.mute
-        });
-      }
-    };
+    (async function initFirebaseSystem() {
+      var base = ["https:", "", "://gstatic.com", "firebasejs", "10.12.0"].join("/");
+      await loadScript(base + "/firebase-app-compat.js");
+      await loadScript(base + "/firebase-auth-compat.js");
+      await loadScript(base + "/firebase-firestore-compat.js");
 
-    const origConfirmBan = window.confirmBan;
-    window.confirmBan = async function() {
-      origConfirmBan();
-      const u = getUser(state.targetUserId);
-      if (u && u.uid) {
-        await db.collection("users").doc(u.uid).update({ banned: u.banned });
-      }
-    };
+      var firebaseConfig = {
+        apiKey: "AIzaSyBu2cYEYQm-btowlBTx-b7fT5akhIMFKzU",
+        authDomain: "://firebaseapp.com",
+        projectId: "premazingonline",
+        storageBucket: "premazingonline.firebasestorage.app",
+        messagingSenderId: "4268724908",
+        appId: "1:4268724908:web:cd4b6a9e081e3254e60509",
+        measurementId: "G-3N7S8WN3JW"
+      };
 
-    const origUnbanUser = window.unbanUser;
-    window.unbanUser = async function(userId) {
-      origUnbanUser(userId);
-      const u = getUser(userId);
-      if (u && u.uid) {
-        await db.collection("users").doc(u.uid).update({ banned: null });
-      }
-    };
+      firebase.initializeApp(firebaseConfig);
+      window.fbAuth = firebase.auth();
+      window.fbDb = firebase.firestore();
 
-    auth.onAuthStateChanged(async (user) => {
-      await syncUsersFromFirestore();
-      const acpBtn = document.getElementById("tabAcpBtn");
+      window.submitFirebaseAuth = async function() {
+        var email = document.getElementById("authEmailInput").value.trim();
+        var pass = document.getElementById("authPassInput").value.trim();
+        var nick = document.getElementById("authNickInput").value.trim();
+        var errEl = document.getElementById("authErrorMsg");
+        errEl.textContent = "";
+        if (!email || !pass) { errEl.textContent = "Заполните почту и пароль!"; return; }
+        try {
+          if (isRegisterMode) {
+            if (!nick) { errEl.textContent = "Укажите игровой никнейм!"; return; }
+            var cred = await window.fbAuth.createUserWithEmailAndPassword(email, pass);
+            await window.fbDb.collection("users").doc(cred.user.uid).set({
+              uid: cred.user.uid, name: nick, email: email, ip: "Cloud", role: "Игрок", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none"
+            });
+          } else {
+            await window.fbAuth.signInWithEmailAndPassword(email, pass);
+          }
+          closeModal("authModal");
+        } catch (e) { errEl.textContent = "Ошибка: " + e.message; }
+      };
 
-      if (user) {
-        document.getElementById("btnOpenAuth").style.display = "none";
-        document.getElementById("btnLogout").style.display = "inline-block";
+      window.fbLogout = function() { window.fbAuth.signOut(); };
 
-        const userDoc = await db.collection("users").doc(user.uid).get();
-        let profile = userDoc.exists ? userDoc.data() : { uid: user.uid, name: user.email, role: "Игрок", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
-        
-        if (!state.users.find(u => u.id === user.uid)) {
-          state.users.push({ id: user.uid, ...profile });
-        }
-        state.activeUserId = user.uid;
+      window.fbAuth.onAuthStateChanged(async function(user) {
+        var snap = await window.fbDb.collection("users").get();
+        var cloudUsers = [];
+        snap.forEach(function(d) { var data = d.data(); cloudUsers.push(Object.assign({ id: data.uid }, data)); });
+        if (cloudUsers.length > 0) state.users = cloudUsers;
 
-        document.getElementById("headerUserDisplay").innerHTML = profile.name + ' <span style="color:var(--accent);">(' + profile.role + ')</span>';
-
-        if (profile.role === "Владелец" || profile.role === "Администратор") {
-          acpBtn.style.display = "inline-block";
-        } else {
-          acpBtn.style.display = "none";
-          switchMainView("forum");
-        }
-      } else {
-        document.getElementById("btnOpenAuth").style.display = "inline-block";
-        document.getElementById("btnLogout").style.display = "none";
-        document.getElementById("headerUserDisplay").textContent = "Гость";
-        acpBtn.style.display = "none";
-        switchMainView("forum");
-      }
-      updateBanners();
-      updateStats();
-    });
-
-    window.getUser = function(id) {
-      return state.users.find(u => u.id === id) || { id: "guest", name: "Гость", role: "Гость", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
-    };
-
-    const origCanUserPost = window.canUserPost;
-    window.canUserPost = function() {
-      if (!auth.currentUser) {
-        alert("Для создания тем и отправки ответов необходимо войти или зарегистрироваться!");
-        document.getElementById("authModal").style.display = "flex";
-        return false;
-      }
-      return origCanUserPost();
-    };
-  </script>
-</body>
-</html>
+        var acpBtn = document.getElementById("tabAcpBtn");
+        if (user) {
+          document.getElementById("btnOpenAuth").style.display = "none";
+          document.getElementById("btnLogout").style.display = "inline-block";
+          var uDoc = await window.fbDb.collection("users").doc(user.uid).get();
+          var profile = uDoc.exists ? uDoc.data() : { uid: user.uid, name: user.email, role: "Игрок", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
+          if (!state.users.find(function(u) { return u.id === user.uid; })) state.users.push(Object.assign({ id: user.uid }, profile));
+          state.activeUserId = user.uid;
+          document.getElementById("headerUserDisplay").innerHTML = profile.name + ' <span style="color:var(--accent);">(' + profile.role + ')</span>';
+	
