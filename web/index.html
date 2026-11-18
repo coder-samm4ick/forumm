@@ -984,10 +984,11 @@
   </div>
 
   <script type="module">
-        import { initializeApp } from "https://gstatic.com";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs } from "https://gstatic.com";
+    <script src="https://gstatic.com"></script>
+  <script src="https://gstatic.com"></script>
+  <script src="https://gstatic.com"></script>
 
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBu2cYEYQm-btowlBTx-b7fT5akhIMFKzU",
       authDomain: "://firebaseapp.com",
@@ -998,25 +999,20 @@
       measurementId: "G-3N7S8WN3JW"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
     let isRegisterMode = false;
 
-    window.openAuthModal = () => {
-      setAuthMode(false);
-      document.getElementById("authModal").style.display = "flex";
-    };
-
-    window.setAuthMode = (reg) => {
+    function setAuthMode(reg) {
       isRegisterMode = reg;
       document.getElementById("regNickGroup").style.display = reg ? "block" : "none";
       document.getElementById("authModalTitle").textContent = reg ? "Регистрация аккаунта" : "Вход на форум";
       document.getElementById("authSubmitBtn").textContent = reg ? "Зарегистрироваться" : "Войти на форум";
       document.getElementById("authErrorMsg").textContent = "";
-    };
+    }
 
-    window.submitFirebaseAuth = async () => {
+    async function submitFirebaseAuth() {
       const email = document.getElementById("authEmailInput").value.trim();
       const pass = document.getElementById("authPassInput").value.trim();
       const nick = document.getElementById("authNickInput").value.trim();
@@ -1034,33 +1030,34 @@
             errEl.textContent = "Укажите игровой никнейм!";
             return;
           }
-          const cred = await createUserWithEmailAndPassword(auth, email, pass);
-          await setDoc(doc(db, "users", cred.user.uid), {
+          const cred = await auth.createUserWithEmailAndPassword(email, pass);
+          await db.collection("users").doc(cred.user.uid).set({
             uid: cred.user.uid,
             name: nick,
             email: email,
-            ip: "Скрыт (Cloud)",
+            ip: "Cloud",
             role: "Игрок",
             prefix: "",
             prefixColor: "#6366f1",
             banned: null,
             mute: "none"
           });
-          addLog(`Новый игрок зарегистрировался на форуме: ${nick}`);
+          addLog("Новый игрок зарегистрировался на форуме: " + nick);
         } else {
-          await signInWithEmailAndPassword(auth, email, pass);
+          await auth.signInWithEmailAndPassword(email, pass);
         }
         closeModal("authModal");
       } catch (e) {
         errEl.textContent = "Ошибка: " + e.message;
       }
-    };
+    }
 
-    window.fbLogout = () => signOut(auth);
+    function fbLogout() {
+      auth.signOut();
+    }
 
-    // Загрузка всех зарегистрированных игроков из Firestore в таблицу ACP
     async function syncUsersFromFirestore() {
-      const snap = await getDocs(collection(db, "users"));
+      const snap = await db.collection("users").get();
       const cloudUsers = [];
       snap.forEach((docSnap) => {
         const d = docSnap.data();
@@ -1083,13 +1080,12 @@
       }
     }
 
-    // Сохранение изменений из ACP (роль, префикс, бан, мут) обратно в Firestore
     const origSaveUserManage = window.saveUserManage;
     window.saveUserManage = async function() {
       origSaveUserManage();
       const u = getUser(state.targetUserId);
       if (u && u.uid) {
-        await updateDoc(doc(db, "users", u.uid), {
+        await db.collection("users").doc(u.uid).update({
           prefix: u.prefix,
           prefixColor: u.prefixColor,
           role: u.role,
@@ -1103,7 +1099,7 @@
       origConfirmBan();
       const u = getUser(state.targetUserId);
       if (u && u.uid) {
-        await updateDoc(doc(db, "users", u.uid), { banned: u.banned });
+        await db.collection("users").doc(u.uid).update({ banned: u.banned });
       }
     };
 
@@ -1112,12 +1108,11 @@
       origUnbanUser(userId);
       const u = getUser(userId);
       if (u && u.uid) {
-        await updateDoc(doc(db, "users", u.uid), { banned: null });
+        await db.collection("users").doc(u.uid).update({ banned: null });
       }
     };
 
-    // Отслеживание состояния входа игрока
-    onAuthStateChanged(auth, async (user) => {
+    auth.onAuthStateChanged(async (user) => {
       await syncUsersFromFirestore();
       const acpBtn = document.getElementById("tabAcpBtn");
 
@@ -1125,15 +1120,15 @@
         document.getElementById("btnOpenAuth").style.display = "none";
         document.getElementById("btnLogout").style.display = "inline-block";
 
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        let profile = userDoc.exists() ? userDoc.data() : { uid: user.uid, name: user.email, role: "Игрок", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
+        const userDoc = await db.collection("users").doc(user.uid).get();
+        let profile = userDoc.exists ? userDoc.data() : { uid: user.uid, name: user.email, role: "Игрок", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
         
         if (!state.users.find(u => u.id === user.uid)) {
           state.users.push({ id: user.uid, ...profile });
         }
         state.activeUserId = user.uid;
 
-        document.getElementById("headerUserDisplay").innerHTML = `${profile.name} <span style="color:var(--accent);">(${profile.role})</span>`;
+        document.getElementById("headerUserDisplay").innerHTML = profile.name + ' <span style="color:var(--accent);">(' + profile.role + ')</span>';
 
         if (profile.role === "Владелец" || profile.role === "Администратор") {
           acpBtn.style.display = "inline-block";
@@ -1152,7 +1147,6 @@
       updateStats();
     });
 
-    // Переопределяем getUser для работы со строковыми UID из Firebase и защиты от гостей
     window.getUser = function(id) {
       return state.users.find(u => u.id === id) || { id: "guest", name: "Гость", role: "Гость", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
     };
@@ -1161,7 +1155,7 @@
     window.canUserPost = function() {
       if (!auth.currentUser) {
         alert("Для создания тем и отправки ответов необходимо войти или зарегистрироваться!");
-        openAuthModal();
+        document.getElementById("authModal").style.display = "flex";
         return false;
       }
       return origCanUserPost();
