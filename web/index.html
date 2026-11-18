@@ -151,9 +151,10 @@
       <button class="nav-btn active" id="tabForumBtn" onclick="switchMainView('forum')">Форум проекта</button>
       <button class="nav-btn" id="tabAcpBtn" onclick="switchMainView('acp')">Панель владельца (ACP)</button>
     </div>
-    <div class="user-box">
-      <span>Аккаунт:</span>
-      <select id="currentUserSelect" onchange="changeActiveUser()"></select>
+      <div class="user-box">
+      <span>Аккаунт: <b id="headerUserDisplay">Гость</b></span>
+      <button class="btn btn-sm" id="btnOpenAuth" onclick="openAuthModal()">Вход / Регистрация</button>
+      <button class="btn btn-ghost btn-sm" id="btnLogout" style="display:none;" onclick="fbLogout()">Выйти</button>
     </div>
   </header>
 
@@ -485,19 +486,14 @@
     }
 
     function init() {
-      renderUserSelector();
       renderCategories();
       renderTopics();
       updateStats();
       updateBanners();
     }
 
-    function renderUserSelector() {
-      const sel = document.getElementById("currentUserSelect");
-      sel.innerHTML = state.users.map(u =>
-        `<option value="${u.id}" ${u.id === state.activeUserId ? 'selected' : ''}>${u.name} (${u.role})</option>`
-      ).join("");
-    }
+    function renderUserSelector() {}
+
 
     function changeActiveUser() {
       state.activeUserId = Number(document.getElementById("currentUserSelect").value);
@@ -958,6 +954,218 @@
     }
 
     init();
+  </script>
+  <!-- Модальное окно Входа и Регистрации (Firebase) -->
+  <div id="authModal" class="modal-overlay">
+    <div class="modal" style="max-width:420px;">
+      <div class="modal-header">
+        <h3 id="authModalTitle">Вход на форум</h3>
+        <button class="close-btn" onclick="closeModal('authModal')">✕</button>
+      </div>
+      <div style="display:flex; gap:8px; margin-bottom:15px;">
+        <button class="btn btn-ghost" style="flex:1;" id="tabLoginMode" onclick="setAuthMode(false)">Вход</button>
+        <button class="btn btn-ghost" style="flex:1;" id="tabRegMode" onclick="setAuthMode(true)">Регистрация</button>
+      </div>
+      <div class="form-group" id="regNickGroup" style="display:none;">
+        <label>Игровой никнейм (Имя_Фамилия)</label>
+        <input type="text" id="authNickInput" placeholder="Например: Ivan_Ivanov" />
+      </div>
+      <div class="form-group">
+        <label>Электронная почта (Email)</label>
+        <input type="email" id="authEmailInput" placeholder="player@premazing.ru" />
+      </div>
+      <div class="form-group">
+        <label>Пароль (минимум 6 символов)</label>
+        <input type="password" id="authPassInput" placeholder="••••••••" />
+      </div>
+      <div id="authErrorMsg" style="color:var(--danger); font-size:13px; margin-bottom:12px;"></div>
+      <button class="btn" style="width:100%;" id="authSubmitBtn" onclick="submitFirebaseAuth()">Войти на форум</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://gstatic.com";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://gstatic.com";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs } from "https://gstatic.com";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBu2cYEYQm-btowlBTx-b7fT5akhIMFKzU",
+      authDomain: "://firebaseapp.com",
+      projectId: "premazingonline",
+      storageBucket: "premazingonline.firebasestorage.app",
+      messagingSenderId: "4268724908",
+      appId: "1:4268724908:web:cd4b6a9e081e3254e60509",
+      measurementId: "G-3N7S8WN3JW"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    let isRegisterMode = false;
+
+    window.openAuthModal = () => {
+      setAuthMode(false);
+      document.getElementById("authModal").style.display = "flex";
+    };
+
+    window.setAuthMode = (reg) => {
+      isRegisterMode = reg;
+      document.getElementById("regNickGroup").style.display = reg ? "block" : "none";
+      document.getElementById("authModalTitle").textContent = reg ? "Регистрация аккаунта" : "Вход на форум";
+      document.getElementById("authSubmitBtn").textContent = reg ? "Зарегистрироваться" : "Войти на форум";
+      document.getElementById("authErrorMsg").textContent = "";
+    };
+
+    window.submitFirebaseAuth = async () => {
+      const email = document.getElementById("authEmailInput").value.trim();
+      const pass = document.getElementById("authPassInput").value.trim();
+      const nick = document.getElementById("authNickInput").value.trim();
+      const errEl = document.getElementById("authErrorMsg");
+      errEl.textContent = "";
+
+      if (!email || !pass) {
+        errEl.textContent = "Заполните почту и пароль!";
+        return;
+      }
+
+      try {
+        if (isRegisterMode) {
+          if (!nick) {
+            errEl.textContent = "Укажите игровой никнейм!";
+            return;
+          }
+          const cred = await createUserWithEmailAndPassword(auth, email, pass);
+          await setDoc(doc(db, "users", cred.user.uid), {
+            uid: cred.user.uid,
+            name: nick,
+            email: email,
+            ip: "Скрыт (Cloud)",
+            role: "Игрок",
+            prefix: "",
+            prefixColor: "#6366f1",
+            banned: null,
+            mute: "none"
+          });
+          addLog(`Новый игрок зарегистрировался на форуме: ${nick}`);
+        } else {
+          await signInWithEmailAndPassword(auth, email, pass);
+        }
+        closeModal("authModal");
+      } catch (e) {
+        errEl.textContent = "Ошибка: " + e.message;
+      }
+    };
+
+    window.fbLogout = () => signOut(auth);
+
+    // Загрузка всех зарегистрированных игроков из Firestore в таблицу ACP
+    async function syncUsersFromFirestore() {
+      const snap = await getDocs(collection(db, "users"));
+      const cloudUsers = [];
+      snap.forEach((docSnap) => {
+        const d = docSnap.data();
+        cloudUsers.push({
+          id: d.uid,
+          uid: d.uid,
+          name: d.name || d.email,
+          ip: d.ip || "Cloud",
+          role: d.role || "Игрок",
+          prefix: d.prefix || "",
+          prefixColor: d.prefixColor || "#6366f1",
+          banned: d.banned || null,
+          mute: d.mute || "none"
+        });
+      });
+      if (cloudUsers.length > 0) {
+        state.users = cloudUsers;
+        updateStats();
+        if (document.getElementById("acpView").style.display === "block") renderAcpAll();
+      }
+    }
+
+    // Сохранение изменений из ACP (роль, префикс, бан, мут) обратно в Firestore
+    const origSaveUserManage = window.saveUserManage;
+    window.saveUserManage = async function() {
+      origSaveUserManage();
+      const u = getUser(state.targetUserId);
+      if (u && u.uid) {
+        await updateDoc(doc(db, "users", u.uid), {
+          prefix: u.prefix,
+          prefixColor: u.prefixColor,
+          role: u.role,
+          mute: u.mute
+        });
+      }
+    };
+
+    const origConfirmBan = window.confirmBan;
+    window.confirmBan = async function() {
+      origConfirmBan();
+      const u = getUser(state.targetUserId);
+      if (u && u.uid) {
+        await updateDoc(doc(db, "users", u.uid), { banned: u.banned });
+      }
+    };
+
+    const origUnbanUser = window.unbanUser;
+    window.unbanUser = async function(userId) {
+      origUnbanUser(userId);
+      const u = getUser(userId);
+      if (u && u.uid) {
+        await updateDoc(doc(db, "users", u.uid), { banned: null });
+      }
+    };
+
+    // Отслеживание состояния входа игрока
+    onAuthStateChanged(auth, async (user) => {
+      await syncUsersFromFirestore();
+      const acpBtn = document.getElementById("tabAcpBtn");
+
+      if (user) {
+        document.getElementById("btnOpenAuth").style.display = "none";
+        document.getElementById("btnLogout").style.display = "inline-block";
+
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        let profile = userDoc.exists() ? userDoc.data() : { uid: user.uid, name: user.email, role: "Игрок", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
+        
+        if (!state.users.find(u => u.id === user.uid)) {
+          state.users.push({ id: user.uid, ...profile });
+        }
+        state.activeUserId = user.uid;
+
+        document.getElementById("headerUserDisplay").innerHTML = `${profile.name} <span style="color:var(--accent);">(${profile.role})</span>`;
+
+        if (profile.role === "Владелец" || profile.role === "Администратор") {
+          acpBtn.style.display = "inline-block";
+        } else {
+          acpBtn.style.display = "none";
+          switchMainView("forum");
+        }
+      } else {
+        document.getElementById("btnOpenAuth").style.display = "inline-block";
+        document.getElementById("btnLogout").style.display = "none";
+        document.getElementById("headerUserDisplay").textContent = "Гость";
+        acpBtn.style.display = "none";
+        switchMainView("forum");
+      }
+      updateBanners();
+      updateStats();
+    });
+
+    // Переопределяем getUser для работы со строковыми UID из Firebase и защиты от гостей
+    window.getUser = function(id) {
+      return state.users.find(u => u.id === id) || { id: "guest", name: "Гость", role: "Гость", prefix: "", prefixColor: "#6366f1", banned: null, mute: "none" };
+    };
+
+    const origCanUserPost = window.canUserPost;
+    window.canUserPost = function() {
+      if (!auth.currentUser) {
+        alert("Для создания тем и отправки ответов необходимо войти или зарегистрироваться!");
+        openAuthModal();
+        return false;
+      }
+      return origCanUserPost();
+    };
   </script>
 </body>
 </html>
